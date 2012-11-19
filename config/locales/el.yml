@@ -137,7 +137,7 @@ el:
   general_text_Yes: 'Ναι'
   general_text_no: 'όχι'
   general_text_yes: 'ναι'
-  general_lang_name: 'Ελληνικά'
+  general_lang_name: 'Greek (Ελληνικά)'
   general_csv_separator: ','
   general_csv_decimal_separator: '.'
   general_csv_encoding: UTF-8
@@ -920,7 +920,6 @@ el:
   project_module_gantt: Gantt
   project_module_calendar: Calendar
   button_edit_associated_wikipage: "Edit associated Wiki page: %{page_title}"
-  text_are_you_sure_with_children: Delete issue and all child issues?
   field_text: Text field
   label_user_mail_option_only_owner: Only for things I am the owner of
   setting_default_notification_option: Default notification option

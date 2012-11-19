@@ -141,15 +141,6 @@ class WikiController < ApplicationController
     end
     content_params ||= {}
 
-    if !@page.new_record? && content_params.present? && @content.text == content_params[:text]
-      attachments = Attachment.attach_files(@page, params[:attachments])
-      render_attachment_warning_if_needed(@page)
-      # don't save content if text wasn't changed
-      @page.save
-      redirect_to :action => 'show', :project_id => @project, :id => @page.title
-      return
-    end
-
     @content.comments = content_params[:comments]
     @text = content_params[:text]
     if params[:section].present? && Redmine::WikiFormatting.supports_section_edit?
@@ -161,8 +152,8 @@ class WikiController < ApplicationController
       @content.text = @text
     end
     @content.author = User.current
-    @page.content = @content
-    if @page.save
+
+    if @page.save_with_content
       attachments = Attachment.attach_files(@page, params[:attachments])
       render_attachment_warning_if_needed(@page)
       call_hook(:controller_wiki_edit_after_save, { :params => params, :page => @page})
@@ -284,7 +275,7 @@ class WikiController < ApplicationController
 
   # Export wiki to a single pdf or html file
   def export
-    @pages = @wiki.pages.all(:order => 'title', :include => [:content, :attachments], :limit => 75)
+    @pages = @wiki.pages.all(:order => 'title', :include => [:content, {:attachments => :author}])
     respond_to do |format|
       format.html {
         export = render_to_string :action => 'export_multiple', :layout => false

@@ -183,7 +183,7 @@ ko:
   general_text_Yes: '예'
   general_text_no: '아니오'
   general_text_yes: '예'
-  general_lang_name: '한국어(Korean)'
+  general_lang_name: 'Korean (한국어)'
   general_csv_separator: ','
   general_csv_decimal_separator: '.'
   general_csv_encoding: CP949
@@ -968,7 +968,6 @@ ko:
   project_module_gantt: Gantt 챠트
   project_module_calendar: 달력
   button_edit_associated_wikipage: "연관된 위키 페이지 %{page_title} 수정"
-  text_are_you_sure_with_children: 일감과 모든 하위 일감들을 삭제하시겠습니까?
   field_text: 텍스트 영역
   label_user_mail_option_only_owner: 내가 저자인 사항만
   setting_default_notification_option: 기본 알림 옵션

@@ -378,8 +378,41 @@ class MailHandlerTest < ActiveSupport::TestCase
               'subject_as_iso-8859-1.eml',
               :issue => {:project => 'ecookbook'}
             )
+    str = "Testmail from Webmail: \xc3\xa4 \xc3\xb6 \xc3\xbc..."
+    str.force_encoding('UTF-8') if str.respond_to?(:force_encoding)
     assert_kind_of Issue, issue
-    assert_equal 'Testmail from Webmail: ä ö ü...', issue.subject
+    assert_equal str, issue.subject
+  end
+
+  def test_add_issue_with_japanese_subject
+    issue = submit_email(
+              'subject_japanese_1.eml',
+              :issue => {:project => 'ecookbook'}
+            )
+    assert_kind_of Issue, issue
+    ja = "\xe3\x83\x86\xe3\x82\xb9\xe3\x83\x88"
+    ja.force_encoding('UTF-8') if ja.respond_to?(:force_encoding)
+    assert_equal ja, issue.subject
+  end
+
+  def test_add_issue_with_no_subject_header
+    issue = submit_email(
+              'no_subject_header.eml',
+              :issue => {:project => 'ecookbook'}
+            )
+    assert_kind_of Issue, issue
+    assert_equal '(no subject)', issue.subject
+  end
+
+  def test_add_issue_with_mixed_japanese_subject
+    issue = submit_email(
+              'subject_japanese_2.eml',
+              :issue => {:project => 'ecookbook'}
+            )
+    assert_kind_of Issue, issue
+    ja = "Re: \xe3\x83\x86\xe3\x82\xb9\xe3\x83\x88"
+    ja.force_encoding('UTF-8') if ja.respond_to?(:force_encoding)
+    assert_equal ja, issue.subject
   end
 
   def test_should_ignore_emails_from_locked_users
