@@ -65,6 +65,7 @@ class TimeEntry < ActiveRecord::Base
      {}
     end
   }
+
   scope :on_user, lambda {|user| {
     :conditions => ["#{TimeEntry.table_name}.user_id = ?", user]
   }}
@@ -83,7 +84,7 @@ class TimeEntry < ActiveRecord::Base
     :include => :issue,
     :conditions => ["#{Issue.table_name}.category_id = ?", category]
   }}
-  
+    
   safe_attributes 'hours', 'comments', 'issue_id', 'activity_id', 'spent_on', 'custom_field_values', 'custom_fields'
 
   def initialize(attributes=nil, *args)

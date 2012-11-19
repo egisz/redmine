@@ -55,7 +55,7 @@ class TimelogController < ApplicationController
     scope = scope.on_version(params[:version]) unless params[:version].nil?
     scope = scope.on_category(params[:category]) unless params[:category].nil?
     scope = scope.on_project(Project.find(params[:project].to_i), false) unless params[:project].nil?
-    scope = scope.on_project(Project.find(params[:parent_project].to_i), true) unless params[:parent_project].nil?
+    scope = scope.on_project(Project.find(params[:toplevel_project].to_i), true) unless params[:toplevel_project].nil?	
     @issue = Issue.find(params[:issue]) unless params[:issue].nil?
     if @issue
       scope = scope.on_issue(@issue)
@@ -146,7 +146,7 @@ class TimelogController < ApplicationController
                 :time_entry => {:issue_id => @time_entry.issue_id, :activity_id => @time_entry.activity_id},
                 :back_url => params[:back_url]
             else
-              redirect_to :action => 'new',
+              redirect_to :action => 'new', 
                 :time_entry => {:project_id => @time_entry.project_id, :issue_id => @time_entry.issue_id, :activity_id => @time_entry.activity_id},
                 :back_url => params[:back_url]
             end
