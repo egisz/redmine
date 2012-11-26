@@ -869,9 +869,10 @@ class Issue < ActiveRecord::Base
     (start_date && due_date) ? working_days(start_date, due_date) : 0
   end
 
-  def soonest_start
+  def soonest_start(reload=false)
+    @soonest_start = nil if reload
     @soonest_start ||= (
-        relations_to.collect{|relation| relation.successor_soonest_start} +
+        relations_to(reload).collect{|relation| relation.successor_soonest_start} +
         ancestors.collect(&:soonest_start)
       ).compact.max
   end
@@ -890,7 +891,11 @@ class Issue < ActiveRecord::Base
   def reschedule_on!(date)
     return if date.nil?
     if leaf?
-      if start_date.nil? || start_date < date
+      if start_date.nil? || start_date != date
+        if start_date && start_date > date
+          # Issue can not be moved earlier than its soonest start date
+          date = [soonest_start(true), date].compact.max
+        end
         reschedule_on(date)
         begin
           save
@@ -902,7 +907,15 @@ class Issue < ActiveRecord::Base
       end
     else
       leaves.each do |leaf|
-        leaf.reschedule_on!(date)
+        if leaf.start_date
+          # Only move subtask if it starts at the same date as the parent
+          # or if it starts before the given date
+          if start_date == leaf.start_date || date > leaf.start_date 
+            leaf.reschedule_on!(date)
+          end
+        else
+          leaf.reschedule_on!(date)
+        end
       end
     end
   end
