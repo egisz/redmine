@@ -135,13 +135,39 @@ module TimelogHelper
     elsif k = criteria_options[:klass]
       obj = k.find_by_id(value.to_i)
       if obj.is_a?(Issue)
-        obj.visible? ? "#{obj.tracker} ##{obj.id}: #{obj.subject}" : "##{obj.id}"
+#         obj.visible? ? "#{obj.tracker} ##{obj.id}: #{obj.subject}" : "##{obj.id}"
+# Temp disable due export errors.
+#        obj.visible? ? link_to_issue(obj, :project => true) : "##{obj.id}"
+#      elsif obj.is_a?(User) 
+#        link_to_user(obj)
+#      elsif obj.is_a?(Project) 
+#        link_to_project(obj)
+        obj.visible? ? link_to_issue(obj, :project => true) : "##{obj.id}"
+      elsif obj.is_a?(User) || obj.is_a?(Project) 
+        link_to(obj.to_s.html_safe, obj)
       else
         obj
       end
     else
       format_value(value, criteria_options[:format])
     end
+  end
+  
+  def criteria_date_range(period, value)
+    from, to = nil, nil 
+    case period 
+    when 'day' 
+      from = to = value 
+    when 'week'
+      from = Date.commercial(value.split('-')[0].to_f, value.split('-')[1].to_f, 1); to = from + 6 
+    when 'month' 
+      from = Date.civil(value.split('-')[0].to_f, value.split('-')[1].to_f, 1); to = (from >> 1) - 1 
+    when 'year' 
+      from = Date.civil(value.split('-')[0].to_f, 1, 1); to = Date.civil(value.split('-')[0].to_f, 12, 31) 
+    end 
+    from = params[:from].to_s.to_date if !params[:from].blank? && params[:from].to_s.to_date > from.to_date 
+    to = params[:to].to_s.to_date if !params[:to].blank? && params[:to].to_s.to_date < to.to_date 
+    return {:from => from, :to => to}
   end
 
   def report_to_csv(report)
