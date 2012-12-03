@@ -21,6 +21,7 @@ require File.expand_path('../../../test_helper', __FILE__)
 
 class ApplicationHelperTest < ActionView::TestCase
   include ERB::Util
+  include Rails.application.routes.url_helpers
 
   fixtures :projects, :roles, :enabled_modules, :users,
            :repositories, :changesets,
@@ -138,7 +139,7 @@ RAW
       # link image
       '!logo.gif!:http://foo.bar/' => '<a href="http://foo.bar/"><img src="/attachments/download/3" title="This is a logo" alt="This is a logo" /></a>',
     }
-    attachments = Attachment.find(:all)
+    attachments = Attachment.all
     to_test.each { |text, result| assert_equal "<p>#{result}</p>", textilizable(text, :attachments => attachments) }
   end
 

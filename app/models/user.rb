@@ -97,7 +97,7 @@ class User < Principal
 
   validates_presence_of :login, :firstname, :lastname, :mail, :if => Proc.new { |user| !user.is_a?(AnonymousUser) }
   validates_uniqueness_of :login, :if => Proc.new { |user| user.login_changed? && user.login.present? }, :case_sensitive => false
-  validates_uniqueness_of :mail, :if => Proc.new { |user| !user.mail.blank? }, :case_sensitive => false
+  validates_uniqueness_of :mail, :if => Proc.new { |user| user.mail_changed? && user.mail.present? }, :case_sensitive => false
   # Login must contain lettres, numbers, underscores only
   validates_format_of :login, :with => /^[a-z0-9_\-@\.]*$/i
   validates_length_of :login, :maximum => LOGIN_LENGTH_LIMIT
@@ -114,11 +114,11 @@ class User < Principal
 
   scope :in_group, lambda {|group|
     group_id = group.is_a?(Group) ? group.id : group.to_i
-    { :conditions => ["#{User.table_name}.id IN (SELECT gu.user_id FROM #{table_name_prefix}groups_users#{table_name_suffix} gu WHERE gu.group_id = ?)", group_id] }
+    where("#{User.table_name}.id IN (SELECT gu.user_id FROM #{table_name_prefix}groups_users#{table_name_suffix} gu WHERE gu.group_id = ?)", group_id)
   }
   scope :not_in_group, lambda {|group|
     group_id = group.is_a?(Group) ? group.id : group.to_i
-    { :conditions => ["#{User.table_name}.id NOT IN (SELECT gu.user_id FROM #{table_name_prefix}groups_users#{table_name_suffix} gu WHERE gu.group_id = ?)", group_id] }
+    where("#{User.table_name}.id NOT IN (SELECT gu.user_id FROM #{table_name_prefix}groups_users#{table_name_suffix} gu WHERE gu.group_id = ?)", group_id)
   }
 
   def set_mail_notification
@@ -360,10 +360,10 @@ class User < Principal
   # version.  Exact matches will be given priority.
   def self.find_by_login(login)
     # First look for an exact match
-    user = all(:conditions => {:login => login}).detect {|u| u.login == login}
+    user = where(:login => login).all.detect {|u| u.login == login}
     unless user
       # Fail over to case-insensitive if none was found
-      user = first(:conditions => ["LOWER(login) = ?", login.to_s.downcase])
+      user = where("LOWER(login) = ?", login.to_s.downcase).first
     end
     user
   end
@@ -380,7 +380,7 @@ class User < Principal
 
   # Makes find_by_mail case-insensitive
   def self.find_by_mail(mail)
-    find(:first, :conditions => ["LOWER(mail) = ?", mail.to_s.downcase])
+    where("LOWER(mail) = ?", mail.to_s.downcase).first
   end
 
   # Returns true if the default admin account can no longer be used
@@ -540,7 +540,7 @@ class User < Principal
   # Returns true if the user is allowed to delete his own account
   def own_account_deletable?
     Setting.unsubscribe? &&
-      (!admin? || User.active.first(:conditions => ["admin = ? AND id <> ?", true, id]).present?)
+      (!admin? || User.active.where("admin = ? AND id <> ?", true, id).exists?)
   end
 
   safe_attributes 'login',
@@ -601,17 +601,17 @@ class User < Principal
   end
 
   def self.current=(user)
-    @current_user = user
+    Thread.current[:current_user] = user
   end
 
   def self.current
-    @current_user ||= User.anonymous
+    Thread.current[:current_user] ||= User.anonymous
   end
 
   # Returns the anonymous user.  If the anonymous user does not exist, it is created.  There can be only
   # one anonymous user per database.
   def self.anonymous
-    anonymous_user = AnonymousUser.find(:first)
+    anonymous_user = AnonymousUser.first
     if anonymous_user.nil?
       anonymous_user = AnonymousUser.create(:lastname => 'Anonymous', :firstname => '', :mail => '', :login => '', :status => 0)
       raise 'Unable to create the anonymous user.' if anonymous_user.new_record?
@@ -624,11 +624,11 @@ class User < Principal
   # This method is used in the SaltPasswords migration and is to be kept as is
   def self.salt_unsalted_passwords!
     transaction do
-      User.find_each(:conditions => "salt IS NULL OR salt = ''") do |user|
+      User.where("salt IS NULL OR salt = ''").find_each do |user|
         next if user.hashed_password.blank?
         salt = User.generate_salt
         hashed_password = User.hash_password("#{salt}#{user.hashed_password}")
-        User.update_all("salt = '#{salt}', hashed_password = '#{hashed_password}'", ["id = ?", user.id] )
+        User.where(:id => user.id).update_all(:salt => salt, :hashed_password => hashed_password)
       end
     end
   end

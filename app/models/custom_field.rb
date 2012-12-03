@@ -30,6 +30,8 @@ class CustomField < ActiveRecord::Base
   validate :validate_custom_field
   before_validation :set_searchable
 
+  scope :sorted, order("#{table_name}.position ASC")
+
   CUSTOM_FIELDS_TABS = [
     {:name => 'IssueCustomField', :partial => 'custom_fields/index',
      :label => :label_issue_plural},
@@ -256,7 +258,7 @@ class CustomField < ActiveRecord::Base
 
   # to move in project_custom_field
   def self.for_all
-    find(:all, :conditions => ["is_for_all=?", true], :order => 'position')
+    where(:is_for_all => true).order('position').all
   end
 
   def type_name

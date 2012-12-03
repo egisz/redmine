@@ -57,25 +57,24 @@ class ProjectsController < ApplicationController
       format.api  {
         @offset, @limit = api_offset_and_limit
         @project_count = Project.visible.count
-        @projects = Project.visible.all(:offset => @offset, :limit => @limit, :order => 'lft')
+        @projects = Project.visible.offset(@offset).limit(@limit).order('lft').all
       }
       format.atom {
-        projects = Project.visible.find(:all, :order => 'created_on DESC',
-                                              :limit => Setting.feeds_limit.to_i)
+        projects = Project.visible.order('created_on DESC').limit(Setting.feeds_limit.to_i).all
         render_feed(projects, :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
       }
     end
   end
 
   def new
-    @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
+    @issue_custom_fields = IssueCustomField.sorted.all
     @trackers = Tracker.sorted.all
     @project = Project.new
     @project.safe_attributes = params[:project]
   end
 
   def create
-    @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
+    @issue_custom_fields = IssueCustomField.sorted.all
     @trackers = Tracker.sorted.all
     @project = Project.new
     @project.safe_attributes = params[:project]
@@ -108,19 +107,12 @@ class ProjectsController < ApplicationController
   end
 
   def copy
-    @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
+    @issue_custom_fields = IssueCustomField.sorted.all
     @trackers = Tracker.sorted.all
-    @root_projects = Project.find(:all,
-                                  :conditions => "parent_id IS NULL AND status = #{Project::STATUS_ACTIVE}",
-                                  :order => 'name')
     @source_project = Project.find(params[:id])
     if request.get?
       @project = Project.copy_from(@source_project)
-      if @project
-        @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
-      else
-        redirect_to :controller => 'admin', :action => 'projects'
-      end
+      @project.identifier = Project.next_identifier if Setting.sequential_project_identifiers?
     else
       Mailer.with_deliveries(params[:notifications] == '1') do
         @project = Project.new
@@ -139,7 +131,8 @@ class ProjectsController < ApplicationController
       end
     end
   rescue ActiveRecord::RecordNotFound
-    redirect_to :controller => 'admin', :action => 'projects'
+    # source_project not found
+    render_404
   end
 	
   # Show @project
@@ -151,7 +144,7 @@ class ProjectsController < ApplicationController
 
     @users_by_role = @project.users_by_role
     @subprojects = @project.children.visible.all
-    @news = @project.news.find(:all, :limit => 5, :include => [ :author, :project ], :order => "#{News.table_name}.created_on DESC")
+    @news = @project.news.limit(5).includes(:author, :project).reorder("#{News.table_name}.created_on DESC").all
     @trackers = @project.rolled_up_trackers
 
     cond = @project.project_condition(Setting.display_subprojects_issues?)
@@ -172,7 +165,7 @@ class ProjectsController < ApplicationController
   end
 
   def settings
-    @issue_custom_fields = IssueCustomField.find(:all, :order => "#{CustomField.table_name}.position")
+    @issue_custom_fields = IssueCustomField.sorted.all
     @issue_category ||= IssueCategory.new
     @member ||= @project.members.new
     @trackers = Tracker.sorted.all
