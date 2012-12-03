@@ -3,7 +3,7 @@
 <% next if hours_for_value.empty? -%>
 <tr class="<%= cycle('odd', 'even') %> <%= grand_total ? 'total' : criterias.length > level+1 ? 'subtotal' : 'last-level' %>  <%= 'current-users-row' if criterias[level] == 'member' && User.current.try(:id) == value.to_i %>">
 <%= ("<td></td>" * level).html_safe %>
-<td><%= grand_total ? l(:label_total) : h(format_criteria_value(@report.available_criteria[criterias[level]], value)) %></td>
+<td><%= grand_total ? l(:label_total) : h(format_criteria_value(@report.available_criteria[criterias[level]], value, true)) %></td>
 <%= ("<td></td>" * (criterias.length - level - 1)).html_safe -%>
   <% total = 0; criteria_values = {} if level == 0 -%>
   <% criteria_level_values = criteria_values.merge({criterias[level].to_sym => value}) -%>
