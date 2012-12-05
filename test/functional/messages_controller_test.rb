@@ -16,18 +16,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require File.expand_path('../../test_helper', __FILE__)
-require 'messages_controller'
-
-# Re-raise errors caught by the controller.
-class MessagesController; def rescue_action(e) raise e end; end
 
 class MessagesControllerTest < ActionController::TestCase
   fixtures :projects, :users, :members, :member_roles, :roles, :boards, :messages, :enabled_modules
 
   def setup
-    @controller = MessagesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
     User.current = nil
   end
 
@@ -159,7 +152,7 @@ class MessagesControllerTest < ActionController::TestCase
   def test_reply
     @request.session[:user_id] = 2
     post :reply, :board_id => 1, :id => 1, :reply => { :content => 'This is a test reply', :subject => 'Test reply' }
-    reply = Message.find(:first, :order => 'id DESC')
+    reply = Message.order('id DESC').first
     assert_redirected_to "/boards/1/topics/1?r=#{reply.id}"
     assert Message.find_by_subject('Test reply')
   end
