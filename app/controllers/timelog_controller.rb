@@ -44,25 +44,8 @@ class TimelogController < ApplicationController
     @query = TimeEntryQuery.build_from_params(params, :project => @project, :name => '_')
     scope = time_entry_scope
 
-#<<<<<<< HEAD
-#    scope = TimeEntry.visible.spent_between(@from, @to)
-#    scope = scope.on_user(params[:member]) unless params[:member].nil?
-#    scope = scope.on_activity(params[:activity]) unless params[:activity].nil?
-#    scope = scope.on_tracker(params[:tracker]) unless params[:tracker].nil?
-#    scope = scope.on_version(params[:version]) unless params[:version].nil?
-#    scope = scope.on_category(params[:category]) unless params[:category].nil?
-#    scope = scope.on_project(Project.find(params[:project].to_i), false) unless params[:project].nil?
-#    scope = scope.on_project(Project.find(params[:toplevel_project].to_i), true) unless params[:toplevel_project].nil?	
-#    @issue = Issue.find(params[:issue]) unless params[:issue].nil?
-#    if @issue
-#      scope = scope.on_issue(@issue)
-#    elsif @project
-#      scope = scope.on_project(@project, Setting.display_subprojects_issues?)
-#    end
-#=======
     sort_init(@query.sort_criteria.empty? ? [['spent_on', 'desc']] : @query.sort_criteria)
     sort_update(@query.sortable_columns)
-# >>>>>>> aba07a860f9583c6ee17e83f54b4002ceec50122
 
     respond_to do |format|
       format.html {
@@ -149,7 +132,7 @@ class TimelogController < ApplicationController
                 :time_entry => {:issue_id => @time_entry.issue_id, :activity_id => @time_entry.activity_id},
                 :back_url => params[:back_url]
             else
-              redirect_to :action => 'new', 
+              redirect_to :action => 'new',
                 :time_entry => {:project_id => @time_entry.project_id, :issue_id => @time_entry.issue_id, :activity_id => @time_entry.activity_id},
                 :back_url => params[:back_url]
             end
