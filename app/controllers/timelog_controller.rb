@@ -30,38 +30,39 @@ class TimelogController < ApplicationController
   accept_rss_auth :index
   accept_api_auth :index, :show, :create, :update, :destroy
 
+  rescue_from Query::StatementInvalid, :with => :query_statement_invalid
+
   helper :sort
   include SortHelper
   helper :issues
   include TimelogHelper
   helper :custom_fields
   include CustomFieldsHelper
+  helper :queries
 
   def index
-    sort_init 'spent_on', 'desc'
-    sort_update 'spent_on' => ['spent_on', "#{TimeEntry.table_name}.created_on"],
-                'user' => 'user_id',
-                'activity' => 'activity_id',
-                'project' => "#{Project.table_name}.name",
-                'issue' => 'issue_id',
-                'hours' => 'hours'
+    @query = TimeEntryQuery.build_from_params(params, :project => @project, :name => '_')
+    scope = time_entry_scope
 
-    retrieve_date_range
-
-    scope = TimeEntry.visible.spent_between(@from, @to)
-    scope = scope.on_user(params[:member]) unless params[:member].nil?
-    scope = scope.on_activity(params[:activity]) unless params[:activity].nil?
-    scope = scope.on_tracker(params[:tracker]) unless params[:tracker].nil?
-    scope = scope.on_version(params[:version]) unless params[:version].nil?
-    scope = scope.on_category(params[:category]) unless params[:category].nil?
-    scope = scope.on_project(Project.find(params[:project].to_i), false) unless params[:project].nil?
-    scope = scope.on_project(Project.find(params[:toplevel_project].to_i), true) unless params[:toplevel_project].nil?	
-    @issue = Issue.find(params[:issue]) unless params[:issue].nil?
-    if @issue
-      scope = scope.on_issue(@issue)
-    elsif @project
-      scope = scope.on_project(@project, Setting.display_subprojects_issues?)
-    end
+#<<<<<<< HEAD
+#    scope = TimeEntry.visible.spent_between(@from, @to)
+#    scope = scope.on_user(params[:member]) unless params[:member].nil?
+#    scope = scope.on_activity(params[:activity]) unless params[:activity].nil?
+#    scope = scope.on_tracker(params[:tracker]) unless params[:tracker].nil?
+#    scope = scope.on_version(params[:version]) unless params[:version].nil?
+#    scope = scope.on_category(params[:category]) unless params[:category].nil?
+#    scope = scope.on_project(Project.find(params[:project].to_i), false) unless params[:project].nil?
+#    scope = scope.on_project(Project.find(params[:toplevel_project].to_i), true) unless params[:toplevel_project].nil?	
+#    @issue = Issue.find(params[:issue]) unless params[:issue].nil?
+#    if @issue
+#      scope = scope.on_issue(@issue)
+#    elsif @project
+#      scope = scope.on_project(@project, Setting.display_subprojects_issues?)
+#    end
+#=======
+    sort_init(@query.sort_criteria.empty? ? [['spent_on', 'desc']] : @query.sort_criteria)
+    sort_update(@query.sortable_columns)
+# >>>>>>> aba07a860f9583c6ee17e83f54b4002ceec50122
 
     respond_to do |format|
       format.html {
@@ -108,8 +109,10 @@ class TimelogController < ApplicationController
   end
 
   def report
-    retrieve_date_range
-    @report = Redmine::Helpers::TimeReport.new(@project, @issue, params[:criteria], params[:columns], @from, @to)
+    @query = TimeEntryQuery.build_from_params(params, :project => @project, :name => '_')
+    scope = time_entry_scope
+
+    @report = Redmine::Helpers::TimeReport.new(@project, @issue, params[:criteria], params[:columns], scope)
 
     respond_to do |format|
       format.html { render :layout => !request.xhr? }
@@ -297,6 +300,17 @@ private
     elsif !params[:project_id].blank?
       @project = Project.find(params[:project_id])
     end
+  end
+
+  # Returns the TimeEntry scope for index and report actions
+  def time_entry_scope
+    scope = TimeEntry.visible.where(@query.statement)
+    if @issue
+      scope = scope.on_issue(@issue)
+    elsif @project
+      scope = scope.on_project(@project, Setting.display_subprojects_issues?)
+    end
+    scope
   end
 
   # Retrieves the date range based on predefined ranges or specific from/to param dates

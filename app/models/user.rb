@@ -20,12 +20,6 @@ require "digest/sha1"
 class User < Principal
   include Redmine::SafeAttributes
 
-  # Account statuses
-  STATUS_ANONYMOUS  = 0
-  STATUS_ACTIVE     = 1
-  STATUS_REGISTERED = 2
-  STATUS_LOCKED     = 3
-
   # Different ways of displaying/sorting users
   USER_FORMATS = {
     :firstname_lastname => {
@@ -82,8 +76,8 @@ class User < Principal
   has_one :api_token, :class_name => 'Token', :conditions => "action='api'"
   belongs_to :auth_source
 
-  scope :logged, :conditions => "#{User.table_name}.status <> #{STATUS_ANONYMOUS}"
-  scope :status, lambda {|arg| arg.blank? ? {} : {:conditions => {:status => arg.to_i}} }
+  scope :logged, lambda { where("#{User.table_name}.status <> #{STATUS_ANONYMOUS}") }
+  scope :status, lambda {|arg| where(arg.blank? ? nil : {:status => arg.to_i}) }
 
   acts_as_customizable
 
@@ -99,10 +93,10 @@ class User < Principal
   validates_uniqueness_of :login, :if => Proc.new { |user| user.login_changed? && user.login.present? }, :case_sensitive => false
   validates_uniqueness_of :mail, :if => Proc.new { |user| user.mail_changed? && user.mail.present? }, :case_sensitive => false
   # Login must contain lettres, numbers, underscores only
-  validates_format_of :login, :with => /^[a-z0-9_\-@\.]*$/i
+  validates_format_of :login, :with => /\A[a-z0-9_\-@\.]*\z/i
   validates_length_of :login, :maximum => LOGIN_LENGTH_LIMIT
   validates_length_of :firstname, :lastname, :maximum => 30
-  validates_format_of :mail, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i, :allow_blank => true
+  validates_format_of :mail, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, :allow_blank => true
   validates_length_of :mail, :maximum => MAIL_LENGTH_LIMIT, :allow_nil => true
   validates_confirmation_of :password, :allow_nil => true
   validates_inclusion_of :mail_notification, :in => MAIL_NOTIFICATION_OPTIONS.collect(&:first), :allow_blank => true
