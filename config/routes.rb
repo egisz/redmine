@@ -85,11 +85,9 @@ RedmineApp::Application.routes.draw do
   match 'watchers/unwatch', :controller=> 'watchers', :action => 'unwatch', :via => :post
   match 'watchers/autocomplete_for_user', :controller=> 'watchers', :action => 'autocomplete_for_user', :via => :get
 
-  get 'projects/:id/settings/:tab', :to => "projects#settings"
-
   resources :projects do
     member do
-      get 'settings'
+      get 'settings(/:tab)', :action => 'settings', :as => 'settings'
       post 'modules'
       post 'archive'
       post 'unarchive'
@@ -143,7 +141,7 @@ RedmineApp::Application.routes.draw do
     end
 
     match 'wiki/index', :controller => 'wiki', :action => 'index', :via => :get
-    resources :wiki, :except => [:index, :new, :create] do
+    resources :wiki, :except => [:index, :new, :create], :as => 'wiki_page' do
       member do
         get 'rename'
         post 'rename'
@@ -205,9 +203,6 @@ RedmineApp::Application.routes.draw do
   match '/time_entries/:id', :to => 'timelog#destroy', :via => :delete, :id => /\d+/
   # TODO: delete /time_entries for bulk deletion
   match '/time_entries/destroy', :to => 'timelog#destroy', :via => :delete
-
-  # TODO: port to be part of the resources route(s)
-  match 'projects/:id/settings/:tab', :to => 'projects#settings', :via => :get
 
   get 'projects/:id/activity', :to => 'activities#index'
   get 'projects/:id/activity.:format', :to => 'activities#index'
@@ -322,7 +317,7 @@ RedmineApp::Application.routes.draw do
   match 'workflows/copy', :controller => 'workflows', :action => 'copy', :via => [:get, :post]
   match 'settings', :controller => 'settings', :action => 'index', :via => :get
   match 'settings/edit', :controller => 'settings', :action => 'edit', :via => [:get, :post]
-  match 'settings/plugin/:id', :controller => 'settings', :action => 'plugin', :via => [:get, :post]
+  match 'settings/plugin/:id', :controller => 'settings', :action => 'plugin', :via => [:get, :post], :as => 'plugin_settings'
 
   match 'sys/projects', :to => 'sys#projects', :via => :get
   match 'sys/projects/:id/repository', :to => 'sys#create_project_repository', :via => :post

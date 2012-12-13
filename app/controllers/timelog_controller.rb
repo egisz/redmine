@@ -128,16 +128,24 @@ class TimelogController < ApplicationController
           flash[:notice] = l(:notice_successful_create)
           if params[:continue]
             if params[:project_id]
-              redirect_to :action => 'new', :project_id => @time_entry.project, :issue_id => @time_entry.issue,
+              options = {
                 :time_entry => {:issue_id => @time_entry.issue_id, :activity_id => @time_entry.activity_id},
                 :back_url => params[:back_url]
+              }
+              if @time_entry.issue
+                redirect_to new_project_issue_time_entry_path(@time_entry.project, @time_entry.issue, options)
+              else
+                redirect_to new_project_time_entry_path(@time_entry.project, options)
+              end
             else
-              redirect_to :action => 'new',
+              options = {
                 :time_entry => {:project_id => @time_entry.project_id, :issue_id => @time_entry.issue_id, :activity_id => @time_entry.activity_id},
                 :back_url => params[:back_url]
+              }
+              redirect_to new_time_entry_path(options)
             end
           else
-            redirect_back_or_default :action => 'index', :project_id => @time_entry.project
+            redirect_back_or_default project_time_entries_path(@time_entry.project)
           end
         }
         format.api  { render :action => 'show', :status => :created, :location => time_entry_url(@time_entry) }
@@ -163,7 +171,7 @@ class TimelogController < ApplicationController
       respond_to do |format|
         format.html {
           flash[:notice] = l(:notice_successful_update)
-          redirect_back_or_default :action => 'index', :project_id => @time_entry.project
+          redirect_back_or_default project_time_entries_path(@time_entry.project)
         }
         format.api  { render_api_ok }
       end
@@ -194,7 +202,7 @@ class TimelogController < ApplicationController
       end
     end
     set_flash_from_bulk_time_entry_save(@time_entries, unsaved_time_entry_ids)
-    redirect_back_or_default({:controller => 'timelog', :action => 'index', :project_id => @projects.first})
+    redirect_back_or_default project_time_entries_path(@projects.first)
   end
 
   def destroy
@@ -213,7 +221,7 @@ class TimelogController < ApplicationController
         else
           flash[:error] = l(:notice_unable_delete_time_entry)
         end
-        redirect_back_or_default(:action => 'index', :project_id => @projects.first)
+        redirect_back_or_default project_time_entries_path(@projects.first)
       }
       format.api  {
         if destroyed
@@ -294,53 +302,6 @@ private
       scope = scope.on_project(@project, Setting.display_subprojects_issues?)
     end
     scope
-  end
-
-  # Retrieves the date range based on predefined ranges or specific from/to param dates
-  def retrieve_date_range
-    @free_period = false
-    @from, @to = nil, nil
-
-    if params[:period_type] == '1' || (params[:period_type].nil? && !params[:period].nil?)
-      case params[:period].to_s
-      when 'today'
-        @from = @to = Date.today
-      when 'yesterday'
-        @from = @to = Date.today - 1
-      when 'current_week'
-        @from = Date.today - (Date.today.cwday - 1)%7
-        @to = @from + 6
-      when 'last_week'
-        @from = Date.today - 7 - (Date.today.cwday - 1)%7
-        @to = @from + 6
-      when 'last_2_weeks'
-        @from = Date.today - 14 - (Date.today.cwday - 1)%7
-        @to = @from + 13
-      when '7_days'
-        @from = Date.today - 7
-        @to = Date.today
-      when 'current_month'
-        @from = Date.civil(Date.today.year, Date.today.month, 1)
-        @to = (@from >> 1) - 1
-      when 'last_month'
-        @from = Date.civil(Date.today.year, Date.today.month, 1) << 1
-        @to = (@from >> 1) - 1
-      when '30_days'
-        @from = Date.today - 30
-        @to = Date.today
-      when 'current_year'
-        @from = Date.civil(Date.today.year, 1, 1)
-        @to = Date.civil(Date.today.year, 12, 31)
-      end
-    elsif params[:period_type] == '2' || (params[:period_type].nil? && (!params[:from].nil? || !params[:to].nil?))
-      begin; @from = params[:from].to_s.to_date unless params[:from].blank?; rescue; end
-      begin; @to = params[:to].to_s.to_date unless params[:to].blank?; rescue; end
-      @free_period = true
-    else
-      # default
-    end
-
-    @from, @to = @to, @from if @from && @to && @from > @to
   end
 
   def parse_params_for_bulk_time_entry_attributes(params)
