@@ -1,5 +1,3 @@
-# encoding: utf-8
-#
 # Redmine - project management software
 # Copyright (C) 2006-2012  Jean-Philippe Lang
 #
@@ -17,27 +15,20 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-module GanttHelper
+require File.expand_path('../../../../test_helper', __FILE__)
 
-  def gantt_zoom_link(gantt, in_or_out)
-    case in_or_out
-    when :in
-      if gantt.zoom < 4
-        link_to_content_update l(:text_zoom_in),
-          params.merge(gantt.params.merge(:zoom => (gantt.zoom + 1))),
-          :class => 'icon icon-zoom-in'
-      else
-        content_tag(:span, l(:text_zoom_in), :class => 'icon icon-zoom-in').html_safe
-      end
+class ApplicationHelperTest < ActionView::TestCase
+  include Redmine::Pagination::Helper
 
-    when :out
-      if gantt.zoom > 1
-        link_to_content_update l(:text_zoom_out),
-          params.merge(gantt.params.merge(:zoom => (gantt.zoom - 1))),
-          :class => 'icon icon-zoom-out'
-      else
-        content_tag(:span, l(:text_zoom_out), :class => 'icon icon-zoom-out').html_safe
-      end
+  def test_per_page_options_should_return_usefull_values
+    with_settings :per_page_options => '10, 25, 50, 100' do
+      assert_equal [], per_page_options(10, 3)
+      assert_equal [], per_page_options(25, 3)
+      assert_equal [10, 25], per_page_options(10, 22)
+      assert_equal [10, 25], per_page_options(25, 22)
+      assert_equal [10, 25, 50], per_page_options(50, 22)
+      assert_equal [10, 25, 50], per_page_options(25, 26)
+      assert_equal [10, 25, 50, 100], per_page_options(25, 120)
     end
   end
 end
