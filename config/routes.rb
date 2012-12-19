@@ -26,7 +26,7 @@ RedmineApp::Application.routes.draw do
 
   match '/news/preview', :controller => 'previews', :action => 'news', :as => 'preview_news', :via => [:get, :post]
   match '/issues/preview/new/:project_id', :to => 'previews#issue', :as => 'preview_new_issue', :via => [:get, :post]
-  match '/issues/preview/edit/:id', :to => 'previews#issue', :as => 'preview_edit_issue', :via => [:get, :post]
+  match '/issues/preview/edit/:id', :to => 'previews#issue', :as => 'preview_edit_issue', :via => [:get, :post, :put]
   match '/issues/preview', :to => 'previews#issue', :as => 'preview_issue', :via => [:get, :post]
 
   match 'projects/:id/wiki', :to => 'wikis#edit', :via => :post
