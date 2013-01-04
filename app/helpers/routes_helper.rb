@@ -17,27 +17,23 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-module ContextMenusHelper
-  def context_menu_link(name, url, options={})
-    options[:class] ||= ''
-    if options.delete(:selected)
-      options[:class] << ' icon-checked disabled'
-      options[:disabled] = true
+module RoutesHelper
+
+  # Returns the path to project issues or to the cross-project
+  # issue list if project is nil
+  def _project_issues_path(project, *args)
+    if project
+      project_issues_path(project, *args)
+    else
+      issues_path(*args)
     end
-    if options.delete(:disabled)
-      options.delete(:method)
-      options.delete(:data)
-      options[:onclick] = 'return false;'
-      options[:class] << ' disabled'
-      url = '#'
-    end
-    link_to h(name), url, options
   end
 
-  def bulk_update_custom_field_context_menu_link(field, text, value)
-    context_menu_link h(text),
-      bulk_update_issues_path(:ids => @issue_ids, :issue => {'custom_field_values' => {field.id => value}}, :back_url => @back),
-      :method => :post,
-      :selected => (@issue && @issue.custom_field_value(field) == value)
+  def _project_calendar_path(project, *args)
+    project ? project_calendar_path(project, *args) : issues_calendar_path(*args)
+  end
+
+  def _project_gantt_path(project, *args)
+    project ? project_gantt_path(project, *args) : issues_gantt_path(*args)
   end
 end

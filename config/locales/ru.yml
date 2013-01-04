@@ -117,8 +117,10 @@ ru:
         many:  "около %{count} часов"
         other: "около %{count} часа"
       x_hours:
-        one:   "1 hour"
-        other: "%{count} hours"
+        one:   "%{count} час"
+        few:   "%{count} часа"
+        many:  "%{count} часов"
+        other: "%{count} часа"
       x_days:
         one:   "%{count} день"
         few:   "%{count} дня"
@@ -399,11 +401,6 @@ ru:
   general_text_yes: 'да'
   general_text_Yes: 'Да'
 
-  gui_validation_error: 1 ошибка
-  gui_validation_error_plural: "%{count} ошибок"
-  gui_validation_error_plural2: "%{count} ошибки"
-  gui_validation_error_plural5: "%{count} ошибок"
-
   label_activity: Действия
   label_add_another_file: Добавить ещё один файл
   label_added_time_by: "Добавил(а) %{author} %{age} назад"
@@ -490,10 +487,6 @@ ru:
   label_document_added: Добавлен документ
   label_document_new: Новый документ
   label_document_plural: Документы
-  label_download: "%{count} загрузка"
-  label_download_plural: "%{count} скачиваний"
-  label_download_plural2: "%{count} загрузки"
-  label_download_plural5: "%{count} загрузок"
   label_downloads_abbr: Скачиваний
   label_duplicated_by: дублируется
   label_duplicates: дублирует
@@ -575,10 +568,6 @@ ru:
   label_message_posted: Добавлено сообщение
   label_me: мне
   label_min_max_length: Минимальная - максимальная длина
-  label_modification: "%{count} изменение"
-  label_modification_plural: "%{count} изменений"
-  label_modification_plural2: "%{count} изменения"
-  label_modification_plural5: "%{count} изменений"
   label_modified: изменено
   label_module_plural: Модули
   label_months_from: месяцев(ца) с

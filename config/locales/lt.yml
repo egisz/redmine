@@ -268,8 +268,6 @@ lt:
   mail_subject_wiki_content_updated: "'%{id}' atnaujintas wiki puslapis"
   mail_body_wiki_content_updated: "'%{id}' wiki puslapį atnaujino %{author}."
 
-  gui_validation_error: 1 klaida
-  gui_validation_error_plural: "%{count} klaidų(os)"
 
   field_name: Pavadinimas
   field_description: Aprašas
@@ -600,8 +598,6 @@ lt:
   label_text: Ilgas tekstas
   label_attribute: Požymis
   label_attribute_plural: Požymiai
-  label_download: "%{count} persiuntimas"
-  label_download_plural: "%{count} persiuntimai"
   label_no_data: Nėra ką atvaizduoti
   label_change_status: Pakeitimo būsena
   label_history: Istorija
@@ -707,8 +703,6 @@ lt:
   label_repository: Saugykla
   label_repository_plural: Saugyklos
   label_browse: Naršyti
-  label_modification: "%{count} pakeitimas"
-  label_modification_plural: "%{count} pakeitimai"
   label_branch: Šaka
   label_tag: Tag
   label_revision: Revizija

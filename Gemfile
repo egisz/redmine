@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.9'
+gem 'rails', '3.2.10'
 gem "jquery-rails", "~> 2.0.2"
 gem "i18n", "~> 0.6.0"
 gem "coderay", "~> 1.0.6"
@@ -54,8 +54,10 @@ end
 platforms :jruby do
   # jruby-openssl is bundled with JRuby 1.7.0
   gem "jruby-openssl" if Object.const_defined?(:JRUBY_VERSION) && JRUBY_VERSION < '1.7.0'
+  gem "activerecord-jdbc-adapter", "1.2.2"
 
   group :mysql do
+    gem "jdbc-mysql", "5.1.13"
     gem "activerecord-jdbcmysql-adapter"
   end
 

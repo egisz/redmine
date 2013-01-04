@@ -10,10 +10,8 @@ ro:
     day_names: [Duminică, Luni, Marti, Miercuri, Joi, Vineri, Sâmbătă]
     abbr_day_names: [Dum, Lun, Mar, Mie, Joi, Vin, Sâm]
 
-    # Don't forget the nil at the beginning; there's no such thing as a 0th month
     month_names: [~, Ianuarie, Februarie, Martie, Aprilie, Mai, Iunie, Iulie, August, Septembrie, Octombrie, Noiembrie, Decembrie]
     abbr_month_names: [~, Ian, Feb, Mar, Apr, Mai, Iun, Iul, Aug, Sep, Oct, Noi, Dec]
-    # Used in date_select and datime_select.
     order:
       - :day
       - :month
@@ -184,8 +182,6 @@ ro:
   mail_subject_reminder: "%{count} tichete trebuie rezolvate în următoarele %{days} zile"
   mail_body_reminder: "%{count} tichete atribuite dumneavoastră trebuie rezolvate în următoarele %{days} zile:"
 
-  gui_validation_error: o eroare
-  gui_validation_error_plural: "%{count} erori"
 
   field_name: Nume
   field_description: Descriere
@@ -460,8 +456,6 @@ ro:
   label_text: Text lung
   label_attribute: Atribut
   label_attribute_plural: Atribute
-  label_download: "%{count} descărcare"
-  label_download_plural: "%{count} descărcări"
   label_no_data: Nu există date de afișat
   label_change_status: Schimbă starea
   label_history: Istoric
@@ -561,8 +555,6 @@ ro:
   label_repository: Depozit
   label_repository_plural: Depozite
   label_browse: Afișează
-  label_modification: "%{count} schimbare"
-  label_modification_plural: "%{count} schimbări"
   label_revision: Revizie
   label_revision_plural: Revizii
   label_associated_revisions: Revizii asociate

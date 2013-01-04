@@ -272,7 +272,7 @@ class WikiController < ApplicationController
 
     @content = @page.content_for_version(params[:version])
     @content.destroy
-    redirect_to_referer_or history_project_wiki_page_path(@project, @page.title) 
+    redirect_to_referer_or history_project_wiki_page_path(@project, @page.title)
   end
 
   # Export wiki to a single pdf or html file
@@ -351,6 +351,6 @@ private
   end
 
   def load_pages_for_index
-    @pages = @wiki.pages.with_updated_on.order("#{WikiPage.table_name}.title").includes(:wiki => :project).includes(:parent).all
+    @pages = @wiki.pages.with_updated_on.reorder("#{WikiPage.table_name}.title").includes(:wiki => :project).includes(:parent).all
   end
 end

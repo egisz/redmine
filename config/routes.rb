@@ -32,12 +32,12 @@ RedmineApp::Application.routes.draw do
   match 'projects/:id/wiki', :to => 'wikis#edit', :via => :post
   match 'projects/:id/wiki/destroy', :to => 'wikis#destroy', :via => [:get, :post]
 
-  match 'boards/:board_id/topics/new', :to => 'messages#new', :via => [:get, :post]
+  match 'boards/:board_id/topics/new', :to => 'messages#new', :via => [:get, :post], :as => 'new_board_message'
   get 'boards/:board_id/topics/:id', :to => 'messages#show', :as => 'board_message'
   match 'boards/:board_id/topics/quote/:id', :to => 'messages#quote', :via => [:get, :post]
   get 'boards/:board_id/topics/:id/edit', :to => 'messages#edit'
 
-  post 'boards/:board_id/topics/preview', :to => 'messages#preview'
+  post 'boards/:board_id/topics/preview', :to => 'messages#preview', :as => 'preview_board_message'
   post 'boards/:board_id/topics/:id/replies', :to => 'messages#reply'
   post 'boards/:board_id/topics/:id/edit', :to => 'messages#edit'
   post 'boards/:board_id/topics/:id/destroy', :to => 'messages#destroy'
@@ -51,14 +51,14 @@ RedmineApp::Application.routes.draw do
   match '/journals/diff/:id', :to => 'journals#diff', :id => /\d+/, :via => :get
   match '/journals/edit/:id', :to => 'journals#edit', :id => /\d+/, :via => [:get, :post]
 
-  get '/projects/:project_id/issues/gantt', :to => 'gantts#show'
+  get '/projects/:project_id/issues/gantt', :to => 'gantts#show', :as => 'project_gantt'
   get '/issues/gantt', :to => 'gantts#show'
 
-  get '/projects/:project_id/issues/calendar', :to => 'calendars#show'
+  get '/projects/:project_id/issues/calendar', :to => 'calendars#show', :as => 'project_calendar'
   get '/issues/calendar', :to => 'calendars#show'
 
-  match 'projects/:id/issues/report', :to => 'reports#issue_report', :via => :get
-  match 'projects/:id/issues/report/:detail', :to => 'reports#issue_report_details', :via => :get
+  get 'projects/:id/issues/report', :to => 'reports#issue_report', :as => 'project_issues_report'
+  get 'projects/:id/issues/report/:detail', :to => 'reports#issue_report_details', :as => 'project_issues_report_details'
 
   match 'my/account', :controller => 'my', :action => 'account', :via => [:get, :post]
   match 'my/account/destroy', :controller => 'my', :action => 'destroy', :via => [:get, :post]
@@ -104,7 +104,7 @@ RedmineApp::Application.routes.draw do
 
     resource :enumerations, :controller => 'project_enumerations', :only => [:update, :destroy]
 
-    get 'issues/:copy_from/copy', :to => 'issues#new'
+    get 'issues/:copy_from/copy', :to => 'issues#new', :as => 'copy_issue'
     resources :issues, :only => [:index, :new, :create] do
       resources :time_entries, :controller => 'timelog' do
         collection do
@@ -308,6 +308,9 @@ RedmineApp::Application.routes.draw do
   resources :auth_sources do
     member do
       get 'test_connection', :as => 'try_connection'
+    end
+    collection do
+      get 'autocomplete_for_new_user'
     end
   end
 
