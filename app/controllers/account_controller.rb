@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -25,7 +25,9 @@ class AccountController < ApplicationController
   # Login request and validation
   def login
     if request.get?
-      logout_user
+      if User.current.logged?
+        redirect_to home_url
+      end
     else
       authenticate_user
     end
@@ -42,7 +44,7 @@ class AccountController < ApplicationController
 
   # Lets user choose a new password
   def lost_password
-    redirect_to(home_url) && return unless Setting.lost_password?
+    (redirect_to(home_url); return) unless Setting.lost_password?
     if params[:token]
       @token = Token.find_by_action_and_value("recovery", params[:token].to_s)
       if @token.nil? || @token.expired?
@@ -92,7 +94,7 @@ class AccountController < ApplicationController
 
   # User self-registration
   def register
-    redirect_to(home_url) && return unless Setting.self_registration? || session[:auth_source_registration]
+    (redirect_to(home_url); return) unless Setting.self_registration? || session[:auth_source_registration]
     if request.get?
       session[:auth_source_registration] = nil
       @user = User.new(:language => current_language.to_s)
@@ -132,11 +134,11 @@ class AccountController < ApplicationController
 
   # Token based account activation
   def activate
-    redirect_to(home_url) && return unless Setting.self_registration? && params[:token]
-    token = Token.find_by_action_and_value('register', params[:token])
-    redirect_to(home_url) && return unless token and !token.expired?
+    (redirect_to(home_url); return) unless Setting.self_registration? && params[:token].present?
+    token = Token.find_by_action_and_value('register', params[:token].to_s)
+    (redirect_to(home_url); return) unless token and !token.expired?
     user = token.user
-    redirect_to(home_url) && return unless user.registered?
+    (redirect_to(home_url); return) unless user.registered?
     user.activate
     if user.save
       token.destroy
@@ -174,7 +176,7 @@ class AccountController < ApplicationController
         user = User.find_or_initialize_by_identity_url(identity_url)
         if user.new_record?
           # Self-registration off
-          redirect_to(home_url) && return unless Setting.self_registration?
+          (redirect_to(home_url); return) unless Setting.self_registration?
 
           # Create on the fly
           user.login = registration['nickname'] unless registration['nickname'].nil?

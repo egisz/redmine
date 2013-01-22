@@ -433,8 +433,10 @@ en:
   permission_edit_own_time_entries: Edit own time logs
   permission_manage_news: Manage news
   permission_comment_news: Comment news
-  permission_manage_documents: Manage documents
   permission_view_documents: View documents
+  permission_add_documents: Add documents
+  permission_edit_documents: Edit documents
+  permission_delete_documents: Delete documents
   permission_manage_files: Manage files
   permission_view_files: View files
   permission_manage_wiki: Manage wiki
@@ -875,6 +877,7 @@ en:
   label_readonly: Read-only
   label_required: Required
   label_attribute_of_project: "Project's %{name}"
+  label_attribute_of_issue: "Issue's %{name}"
   label_attribute_of_author: "Author's %{name}"
   label_attribute_of_assigned_to: "Assignee's %{name}"
   label_attribute_of_user: "User's %{name}"
@@ -883,6 +886,7 @@ en:
   label_cross_project_tree: With project tree
   label_cross_project_hierarchy: With project hierarchy
   label_cross_project_system: With all projects
+  label_gantt_progress_line: Progress line
 
   button_login: Login
   button_submit: Submit
@@ -966,7 +970,7 @@ en:
   text_tip_issue_begin_day: issue beginning this day
   text_tip_issue_end_day: issue ending this day
   text_tip_issue_begin_end_day: issue beginning and ending this day
-  text_project_identifier_info: 'Only lower case letters (a-z), numbers, dashes and underscores are allowed.<br />Once saved, the identifier cannot be changed.'
+  text_project_identifier_info: 'Only lower case letters (a-z), numbers, dashes and underscores are allowed, must start with a lower case letter.<br />Once saved, the identifier cannot be changed.'
   text_caracters_maximum: "%{count} characters maximum."
   text_caracters_minimum: "Must be at least %{count} characters long."
   text_length_between: "Length between %{min} and %{max} characters."
@@ -1026,6 +1030,7 @@ en:
   text_account_destroy_confirmation: "Are you sure you want to proceed?\nYour account will be permanently deleted, with no way to reactivate it."
   text_session_expiration_settings: "Warning: changing these settings may expire the current sessions including yours."
   text_project_closed: This project is closed and read-only.
+  text_turning_multiple_off: "If you disable multiple values, multiple values will be removed in order to preserve only one value per item."
 
   default_role_manager: Manager
   default_role_developer: Developer

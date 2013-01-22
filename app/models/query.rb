@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -82,6 +82,28 @@ class QueryCustomFieldColumn < QueryColumn
 
   def css_classes
     @css_classes ||= "#{name} #{@cf.field_format}"
+  end
+end
+
+class QueryAssociationCustomFieldColumn < QueryCustomFieldColumn
+
+  def initialize(association, custom_field)
+    super(custom_field)
+    self.name = "#{association}.cf_#{custom_field.id}".to_sym
+    # TODO: support sorting/grouping by association custom field
+    self.sortable = false
+    self.groupable = false
+    @association = association
+  end
+
+  def value(object)
+    if assoc = object.send(@association)
+      super(assoc)
+    end
+  end
+
+  def css_classes
+    @css_classes ||= "#{@association}_cf_#{@cf.id} #{@cf.field_format}"
   end
 end
 

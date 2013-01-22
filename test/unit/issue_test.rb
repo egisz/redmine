@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -77,6 +77,15 @@ class IssueTest < ActiveSupport::TestCase
     issue = Issue.new(:start_date => '2012-10-06', :due_date => '2012-10-02')
     assert !issue.valid?
     assert_include 'Due date must be greater than start date', issue.errors.full_messages
+  end
+
+  def test_estimated_hours_should_be_validated
+    set_language_if_valid 'en'
+    ['-2'].each do |invalid|
+      issue = Issue.new(:estimated_hours => invalid)
+      assert !issue.valid?
+      assert_include 'Estimated time is invalid', issue.errors.full_messages
+    end
   end
 
   def test_create_with_required_custom_field
@@ -298,6 +307,16 @@ class IssueTest < ActiveSupport::TestCase
   def test_open_scope_with_arg
     issues = Issue.open(false).all
     assert_equal issues, issues.select(&:closed?)
+  end
+
+  def test_fixed_version_scope_with_a_version_should_return_its_fixed_issues
+    version = Version.find(2)
+    assert version.fixed_issues.any?
+    assert_equal version.fixed_issues.to_a.sort, Issue.fixed_version(version).to_a.sort
+  end
+
+  def test_fixed_version_scope_with_empty_array_should_return_no_result
+    assert_equal 0, Issue.fixed_version([]).count
   end
 
   def test_errors_full_messages_should_include_custom_fields_errors

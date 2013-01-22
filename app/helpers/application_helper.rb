@@ -1,7 +1,7 @@
 # encoding: utf-8
 #
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -91,14 +91,10 @@ module ApplicationHelper
   # * :download - Force download (default: false)
   def link_to_attachment(attachment, options={})
     text = options.delete(:text) || attachment.filename
-    action = options.delete(:download) ? 'download' : 'show'
-    opt_only_path = {}
-    opt_only_path[:only_path] = (options[:only_path] == false ? false : true)
-    options.delete(:only_path)
-    link_to(h(text),
-           {:controller => 'attachments', :action => action,
-            :id => attachment, :filename => attachment.filename}.merge(opt_only_path),
-           options)
+    route_method = options.delete(:download) ? :download_named_attachment_path : :named_attachment_path
+    html_options = options.slice!(:only_path)
+    url = send(route_method, attachment, attachment.filename, options)
+    link_to text, url, html_options
   end
 
   # Generates a link to a SCM revision
@@ -120,13 +116,11 @@ module ApplicationHelper
   # Generates a link to a message
   def link_to_message(message, options={}, html_options = nil)
     link_to(
-      h(truncate(message.subject, :length => 60)),
-      { :controller => 'messages', :action => 'show',
-        :board_id => message.board_id,
-        :id => (message.parent_id || message.id),
+      truncate(message.subject, :length => 60),
+      board_message_path(message.board_id, message.parent_id || message.id, {
         :r => (message.parent_id && message.id),
         :anchor => (message.parent_id ? "message-#{message.id}" : nil)
-      }.merge(options),
+      }.merge(options)),
       html_options
     )
   end
@@ -135,16 +129,29 @@ module ApplicationHelper
   # Examples:
   #
   #   link_to_project(project)                          # => link to the specified project overview
-  #   link_to_project(project, :action=>'settings')     # => link to project settings
   #   link_to_project(project, {:only_path => false}, :class => "project") # => 3rd arg adds html options
   #   link_to_project(project, {}, :class => "project") # => html options with default url (project overview)
   #
   def link_to_project(project, options={}, html_options = nil)
     if project.archived?
-      h(project)
-    else
+      h(project.name)
+    elsif options.key?(:action)
+      ActiveSupport::Deprecation.warn "#link_to_project with :action option is deprecated and will be removed in Redmine 3.0."
       url = {:controller => 'projects', :action => 'show', :id => project}.merge(options)
-      link_to(h(project), url, html_options)
+      link_to project.name, url, html_options
+    else
+      link_to project.name, project_path(project, options), html_options
+    end
+  end
+
+  # Generates a link to a project settings if active
+  def link_to_project_settings(project, options={}, html_options=nil)
+    if project.active?
+      link_to project.name, settings_project_path(project, options), html_options
+    elsif project.archived?
+      h(project.name)
+    else
+      link_to project.name, project_path(project, options), html_options
     end
   end
 
@@ -153,8 +160,8 @@ module ApplicationHelper
   end
 
   def thumbnail_tag(attachment)
-    link_to image_tag(url_for(:controller => 'attachments', :action => 'thumbnail', :id => attachment)),
-      {:controller => 'attachments', :action => 'show', :id => attachment, :filename => attachment.filename},
+    link_to image_tag(thumbnail_path(attachment)),
+      named_attachment_path(attachment, attachment.filename),
       :title => attachment.filename
   end
 
@@ -545,15 +552,14 @@ module ApplicationHelper
 
   def parse_inline_attachments(text, project, obj, attr, only_path, options)
     # when using an image link, try to use an attachment, if possible
-    if options[:attachments].present? || (obj && obj.respond_to?(:attachments))
-      attachments = options[:attachments] || []
-      attachments += obj.attachments if obj
+    attachments = options[:attachments] || []
+    attachments += obj.attachments if obj.respond_to?(:attachments)
+    if attachments.present?
       text.gsub!(/src="([^\/"]+\.(bmp|gif|jpg|jpe|jpeg|png))"(\s+alt="([^"]*)")?/i) do |m|
         filename, ext, alt, alttext = $1.downcase, $2, $3, $4
         # search for the picture in attachments
         if found = Attachment.latest_attach(attachments, filename)
-          image_url = url_for :only_path => only_path, :controller => 'attachments',
-                              :action => 'download', :id => found
+          image_url = download_named_attachment_path(found, found.filename, :only_path => only_path)
           desc = found.description.to_s.gsub('"', '')
           if !desc.blank? && alttext.blank?
             alt = " title=\"#{desc}\" alt=\"#{desc}\""
@@ -768,9 +774,8 @@ module ApplicationHelper
             end
           when 'attachment'
             attachments = options[:attachments] || (obj && obj.respond_to?(:attachments) ? obj.attachments : nil)
-            if attachments && attachment = attachments.detect {|a| a.filename == name }
-              link = link_to h(attachment.filename), {:only_path => only_path, :controller => 'attachments', :action => 'download', :id => attachment},
-                                                     :class => 'attachment'
+            if attachments && attachment = Attachment.latest_attach(attachments, name)
+              link = link_to_attachment(attachment, :only_path => only_path, :download => true, :class => 'attachment')
             end
           when 'project'
             if p = Project.visible.where("identifier = :s OR LOWER(name) = :s", :s => name.downcase).first
@@ -1026,7 +1031,7 @@ module ApplicationHelper
         (pcts[1] > 0 ? content_tag('td', '', :style => "width: #{pcts[1]}%;", :class => 'done') : ''.html_safe) +
         (pcts[2] > 0 ? content_tag('td', '', :style => "width: #{pcts[2]}%;", :class => 'todo') : ''.html_safe)
       ), :class => 'progress', :style => "width: #{width};").html_safe +
-      content_tag('p', legend, :class => 'pourcent').html_safe
+      content_tag('p', legend, :class => 'percent').html_safe
   end
 
   def checked_image(checked=true)

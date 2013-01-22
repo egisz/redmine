@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -107,7 +107,7 @@ class MailHandler < ActionMailer::Base
       else
         # Default behaviour, emails from unknown users are ignored
         if logger && logger.info
-          logger.info  "MailHandler: ignoring email from unknown user [#{sender_email}]" 
+          logger.info  "MailHandler: ignoring email from unknown user [#{sender_email}]"
         end
         return false
       end
@@ -485,7 +485,7 @@ class MailHandler < ActionMailer::Base
                  }
     if assignee.nil? && keyword.match(/ /)
       firstname, lastname = *(keyword.split) # "First Last Throwaway"
-      assignee ||= assignable.detect {|a| 
+      assignee ||= assignable.detect {|a|
                      a.is_a?(User) && a.firstname.to_s.downcase == firstname &&
                        a.lastname.to_s.downcase == lastname
                    }

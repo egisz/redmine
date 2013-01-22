@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -353,13 +353,16 @@ class User < Principal
   # Find a user account by matching the exact login and then a case-insensitive
   # version.  Exact matches will be given priority.
   def self.find_by_login(login)
-    # First look for an exact match
-    user = where(:login => login).all.detect {|u| u.login == login}
-    unless user
-      # Fail over to case-insensitive if none was found
-      user = where("LOWER(login) = ?", login.to_s.downcase).first
+    if login.present?
+      login = login.to_s
+      # First look for an exact match
+      user = where(:login => login).all.detect {|u| u.login == login}
+      unless user
+        # Fail over to case-insensitive if none was found
+        user = where("LOWER(login) = ?", login.downcase).first
+      end
+      user
     end
-    user
   end
 
   def self.find_by_rss_key(key)

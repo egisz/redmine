@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -146,7 +146,9 @@ Redmine::AccessControl.map do |map|
   end
 
   map.project_module :documents do |map|
-    map.permission :manage_documents, {:documents => [:new, :create, :edit, :update, :destroy, :add_attachment]}, :require => :loggedin
+    map.permission :add_documents, {:documents => [:new, :create, :add_attachment]}, :require => :loggedin
+    map.permission :edit_documents, {:documents => [:edit, :update, :add_attachment]}, :require => :loggedin
+    map.permission :delete_documents, {:documents => [:destroy]}, :require => :loggedin
     map.permission :view_documents, {:documents => [:index, :show, :download]}, :read => true
   end
 

@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -88,7 +88,7 @@ class TimeEntryQuery < Query
     } unless activities.empty?
 
     add_custom_fields_filters(TimeEntryCustomField.where(:is_filter => true).all)
-    add_associations_custom_fields_filters :project, :user
+    add_associations_custom_fields_filters :project, :issue, :user
 
     @available_filters.each do |field, options|
       options[:name] ||= l(options[:label] || "field_#{field}".gsub(/_id$/, ''))
@@ -100,6 +100,7 @@ class TimeEntryQuery < Query
     return @available_columns if @available_columns
     @available_columns = self.class.available_columns.dup
     @available_columns += TimeEntryCustomField.all.map {|cf| QueryCustomFieldColumn.new(cf) }
+    @available_columns += IssueCustomField.all.map {|cf| QueryAssociationCustomFieldColumn.new(:issue, cf) }
     @available_columns
   end
 

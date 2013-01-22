@@ -337,8 +337,8 @@ div.issue table.attributes td {width:28%;}
 #relations td.buttons {padding:0;}
 
 fieldset.collapsible { border-width: 1px 0 0 0; font-size: 0.9em; }
-fieldset.collapsible legend { padding-left: 16px; background: url(../images/arrow_expanded.png) no-repeat 0% 40%; cursor:pointer; }
-fieldset.collapsible.collapsed legend { background-image: url(../images/arrow_collapsed.png); }
+fieldset.collapsible>legend { padding-left: 16px; background: url(../images/arrow_expanded.png) no-repeat 0% 40%; cursor:pointer; }
+fieldset.collapsible.collapsed>legend { background-image: url(../images/arrow_collapsed.png); }
 
 fieldset#date-range p { margin: 2px 0 2px 0; }
 fieldset#filters table { border-collapse: collapse; }
@@ -562,7 +562,7 @@ div#tab-content-members .splitcontentright, div#tab-content-memberships .splitco
 div#tab-content-members fieldset, div#tab-content-memberships fieldset, div#tab-content-users fieldset { padding:1em; margin-bottom: 1em; }
 div#tab-content-members fieldset legend, div#tab-content-memberships fieldset legend, div#tab-content-users fieldset legend { font-weight: bold; }
 div#tab-content-members fieldset label, div#tab-content-memberships fieldset label, div#tab-content-users fieldset label { display: block; }
-div#tab-content-members fieldset div, div#tab-content-users fieldset div { max-height: 400px; overflow:auto; }
+div#tab-content-members #principals, div#tab-content-users #principals { max-height: 400px; overflow:auto; }
 
 #users_for_watcher {height: 200px; overflow:auto;}
 #users_for_watcher label {display: block;}
@@ -702,7 +702,7 @@ table.progress td { height: 1em; }
 table.progress td.closed { background: #BAE0BA none repeat scroll 0%; }
 table.progress td.done { background: #D3EDD3 none repeat scroll 0%; }
 table.progress td.todo { background: #eee none repeat scroll 0%; }
-p.pourcent {font-size: 80%;}
+p.percent {font-size: 80%;}
 p.progress-info {clear: left; font-size: 80%; margin-top:-4px; color:#777;}
 
 #roadmap table.progress td { height: 1.2em; }

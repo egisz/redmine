@@ -425,6 +425,7 @@ de:
   label_attribute_of_assigned_to: "%{name} des Bearbeiters"
   label_attribute_of_author: "%{name} des Autors"
   label_attribute_of_fixed_version: "%{name} der Zielversion"
+  label_attribute_of_issue: "%{name} des Tickets"
   label_attribute_of_project: "%{name} des Projekts"
   label_attribute_of_user: "%{name} des Benutzers"
   label_attribute_plural: Attribute
@@ -532,6 +533,7 @@ de:
   label_float: Fließkommazahl
   label_follows: Folgt
   label_gantt: Gantt-Diagramm
+  label_gantt_progress_line: Fortschrittslinie
   label_general: Allgemein
   label_generate_key: Generieren
   label_git_report_last_commit: Bericht des letzten Commits für Dateien und Verzeichnisse
@@ -864,6 +866,7 @@ de:
   permission_add_messages: Forenbeiträge hinzufügen
   permission_add_project: Projekt erstellen
   permission_add_subprojects: Unterprojekte erstellen
+  permission_add_documents: Dokumente hinzufügen
   permission_browse_repository: Projektarchiv ansehen
   permission_close_project: Schließen / erneutes Öffnen eines Projekts
   permission_comment_news: News kommentieren
@@ -874,6 +877,7 @@ de:
   permission_delete_own_messages: Eigene Forenbeiträge löschen
   permission_delete_wiki_pages: Wiki-Seiten löschen
   permission_delete_wiki_pages_attachments: Anhänge löschen
+  permission_delete_documents: Dokumente löschen
   permission_edit_issue_notes: Kommentare bearbeiten
   permission_edit_issues: Tickets bearbeiten
   permission_edit_messages: Forenbeiträge bearbeiten
@@ -883,11 +887,11 @@ de:
   permission_edit_project: Projekt bearbeiten
   permission_edit_time_entries: Gebuchte Aufwände bearbeiten
   permission_edit_wiki_pages: Wiki-Seiten bearbeiten
+  permission_edit_documents: Dokumente bearbeiten
   permission_export_wiki_pages: Wiki-Seiten exportieren
   permission_log_time: Aufwände buchen
   permission_manage_boards: Foren verwalten
   permission_manage_categories: Ticket-Kategorien verwalten
-  permission_manage_documents: Dokumente verwalten
   permission_manage_files: Dateien verwalten
   permission_manage_issue_relations: Ticket-Beziehungen verwalten
   permission_manage_members: Mitglieder verwalten
@@ -1048,7 +1052,7 @@ de:
   text_plugin_assets_writable: Verzeichnis für Plugin-Assets beschreibbar
   text_project_closed: Dieses Projekt ist geschlossen und kann nicht bearbeitet werden.
   text_project_destroy_confirmation: Sind Sie sicher, dass sie das Projekt löschen wollen?
-  text_project_identifier_info: 'Kleinbuchstaben (a-z), Ziffern, Binde- und Unterstriche erlaubt.<br />Einmal gespeichert, kann die Kennung nicht mehr geändert werden.'
+  text_project_identifier_info: 'Kleinbuchstaben (a-z), Ziffern, Binde- und Unterstriche erlaubt, muss mit einem Kleinbuchstaben beginnen.<br />Einmal gespeichert, kann die Kennung nicht mehr geändert werden.'
   text_reassign_time_entries: 'Gebuchte Aufwände diesem Ticket zuweisen:'
   text_regexp_info: z. B. ^[A-Z0-9]+$
   text_repository_identifier_info: 'Kleinbuchstaben (a-z), Ziffern, Binde- und Unterstriche erlaubt.<br />Einmal gespeichert, kann die Kennung nicht mehr geändert werden.'
@@ -1070,6 +1074,8 @@ de:
   text_tip_issue_begin_end_day: Aufgabe, die an diesem Tag beginnt und endet
   text_tip_issue_end_day: Aufgabe, die an diesem Tag endet
   text_tracker_no_workflow: Kein Workflow für diesen Tracker definiert.
+  text_turning_multiple_off: Wenn Sie die Mehrfachauswahl deaktivieren, werden Felder mit Mehrfachauswahl bereinigt.
+    Dadurch wird sichergestellt, dass lediglich ein Wert pro Feld ausgewählt ist.
   text_unallowed_characters: Nicht erlaubte Zeichen
   text_user_mail_option: "Für nicht ausgewählte Projekte werden Sie nur Benachrichtigungen für Dinge erhalten, die Sie beobachten oder an denen Sie beteiligt sind (z. B. Tickets, deren Autor Sie sind oder die Ihnen zugewiesen sind)."
   text_user_wrote: "%{value} schrieb:"
@@ -1086,5 +1092,5 @@ de:
   version_status_closed: abgeschlossen
   version_status_locked: gesperrt
   version_status_open: offen
-  
+
   warning_attachments_not_saved: "%{count} Datei(en) konnten nicht gespeichert werden."

@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,10 +24,10 @@ RedmineApp::Application.routes.draw do
   match 'account/lost_password', :to => 'account#lost_password', :via => [:get, :post], :as => 'lost_password'
   match 'account/activate', :to => 'account#activate', :via => :get
 
-  match '/news/preview', :controller => 'previews', :action => 'news', :as => 'preview_news', :via => [:get, :post]
-  match '/issues/preview/new/:project_id', :to => 'previews#issue', :as => 'preview_new_issue', :via => [:get, :post]
+  match '/news/preview', :controller => 'previews', :action => 'news', :as => 'preview_news', :via => [:get, :post, :put]
+  match '/issues/preview/new/:project_id', :to => 'previews#issue', :as => 'preview_new_issue', :via => [:get, :post, :put]
   match '/issues/preview/edit/:id', :to => 'previews#issue', :as => 'preview_edit_issue', :via => [:get, :post, :put]
-  match '/issues/preview', :to => 'previews#issue', :as => 'preview_issue', :via => [:get, :post]
+  match '/issues/preview', :to => 'previews#issue', :as => 'preview_issue', :via => [:get, :post, :put]
 
   match 'projects/:id/wiki', :to => 'wikis#edit', :via => :post
   match 'projects/:id/wiki/destroy', :to => 'wikis#destroy', :via => [:get, :post]
@@ -157,7 +157,7 @@ RedmineApp::Application.routes.draw do
       end
     end
     match 'wiki', :controller => 'wiki', :action => 'show', :via => :get
-    get 'wiki/:id/:version', :to => 'wiki#show'
+    get 'wiki/:id/:version', :to => 'wiki#show', :constraints => {:version => /\d+/}
     delete 'wiki/:id/:version', :to => 'wiki#destroy_version'
     get 'wiki/:id/:version/annotate', :to => 'wiki#annotate'
     get 'wiki/:id/:version/diff', :to => 'wiki#diff'
@@ -257,10 +257,10 @@ RedmineApp::Application.routes.draw do
   get 'projects/:id/repository', :to => 'repositories#show', :path => nil
 
   # additional routes for having the file name at the end of url
-  match 'attachments/:id/:filename', :controller => 'attachments', :action => 'show', :id => /\d+/, :filename => /.*/, :via => :get
-  match 'attachments/download/:id/:filename', :controller => 'attachments', :action => 'download', :id => /\d+/, :filename => /.*/, :via => :get
-  match 'attachments/download/:id', :controller => 'attachments', :action => 'download', :id => /\d+/, :via => :get
-  match 'attachments/thumbnail/:id(/:size)', :controller => 'attachments', :action => 'thumbnail', :id => /\d+/, :via => :get, :size => /\d+/
+  get 'attachments/:id/:filename', :to => 'attachments#show', :id => /\d+/, :filename => /.*/, :as => 'named_attachment'
+  get 'attachments/download/:id/:filename', :to => 'attachments#download', :id => /\d+/, :filename => /.*/, :as => 'download_named_attachment'
+  get 'attachments/download/:id', :to => 'attachments#download', :id => /\d+/
+  get 'attachments/thumbnail/:id(/:size)', :to => 'attachments#thumbnail', :id => /\d+/, :size => /\d+/, :as => 'thumbnail'
   resources :attachments, :only => [:show, :destroy]
 
   resources :groups do

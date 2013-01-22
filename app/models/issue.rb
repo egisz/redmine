@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -67,7 +67,9 @@ class Issue < ActiveRecord::Base
 
   validates_length_of :subject, :maximum => 255
   validates_inclusion_of :done_ratio, :in => 0..100
-  validates_numericality_of :estimated_hours, :allow_nil => true
+  validates :estimated_hours, :numericality => {:greater_than_or_equal_to => 0, :allow_nil => true, :message => :invalid}
+  validates :start_date, :date => true
+  validates :due_date, :date => true
   validate :validate_issue, :validate_required_fields
 
   scope :visible, lambda {|*args|
@@ -82,6 +84,10 @@ class Issue < ActiveRecord::Base
   scope :recently_updated, lambda { order("#{Issue.table_name}.updated_on DESC") }
   scope :on_active_project, lambda {
     includes(:status, :project, :tracker).where("#{Project.table_name}.status = ?", Project::STATUS_ACTIVE)
+  }
+  scope :fixed_version, lambda {|versions|
+    ids = [versions].flatten.compact.map {|v| v.is_a?(Version) ? v.id : v}
+    ids.any? ? where(:fixed_version_id => ids) : where('1=0')
   }
 
   before_create :default_assign
@@ -424,7 +430,7 @@ class Issue < ActiveRecord::Base
 
     if attrs['parent_issue_id'].present?
       s = attrs['parent_issue_id'].to_s
-      unless (m = s.match(%r{\A#?(\d+)\z})) && Issue.visible(user).exists?(m[1])
+      unless (m = s.match(%r{\A#?(\d+)\z})) && (m[1] == parent_id.to_s || Issue.visible(user).exists?(m[1]))
         @invalid_parent_issue_id = attrs.delete('parent_issue_id')
       end
     end
@@ -532,14 +538,6 @@ class Issue < ActiveRecord::Base
   end
 
   def validate_issue
-    if due_date.nil? && @attributes['due_date'].present?
-      errors.add :due_date, :not_a_date
-    end
-
-    if start_date.nil? && @attributes['start_date'].present?
-      errors.add :start_date, :not_a_date
-    end
-
     if due_date && start_date && due_date < start_date
       errors.add :due_date, :greater_than_start_date
     end

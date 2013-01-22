@@ -1,7 +1,7 @@
 # encoding: utf-8
 #
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -132,12 +132,12 @@ RAW
 
   def test_attached_images
     to_test = {
-      'Inline image: !logo.gif!' => 'Inline image: <img src="/attachments/download/3" title="This is a logo" alt="This is a logo" />',
-      'Inline image: !logo.GIF!' => 'Inline image: <img src="/attachments/download/3" title="This is a logo" alt="This is a logo" />',
+      'Inline image: !logo.gif!' => 'Inline image: <img src="/attachments/download/3/logo.gif" title="This is a logo" alt="This is a logo" />',
+      'Inline image: !logo.GIF!' => 'Inline image: <img src="/attachments/download/3/logo.gif" title="This is a logo" alt="This is a logo" />',
       'No match: !ogo.gif!' => 'No match: <img src="ogo.gif" alt="" />',
       'No match: !ogo.GIF!' => 'No match: <img src="ogo.GIF" alt="" />',
       # link image
-      '!logo.gif!:http://foo.bar/' => '<a href="http://foo.bar/"><img src="/attachments/download/3" title="This is a logo" alt="This is a logo" /></a>',
+      '!logo.gif!:http://foo.bar/' => '<a href="http://foo.bar/"><img src="/attachments/download/3/logo.gif" title="This is a logo" alt="This is a logo" /></a>',
     }
     attachments = Attachment.all
     to_test.each { |text, result| assert_equal "<p>#{result}</p>", textilizable(text, :attachments => attachments) }
@@ -183,13 +183,13 @@ RAW
 
     to_test = {
       'Inline image: !testtest.jpg!' =>
-        'Inline image: <img src="/attachments/download/' + a1.id.to_s + '" alt="" />',
+        'Inline image: <img src="/attachments/download/' + a1.id.to_s + '/testtest.JPG" alt="" />',
       'Inline image: !testtest.jpeg!' =>
-        'Inline image: <img src="/attachments/download/' + a2.id.to_s + '" alt="" />',
+        'Inline image: <img src="/attachments/download/' + a2.id.to_s + '/testtest.jpeg" alt="" />',
       'Inline image: !testtest.jpe!' =>
-        'Inline image: <img src="/attachments/download/' + a3.id.to_s + '" alt="" />',
+        'Inline image: <img src="/attachments/download/' + a3.id.to_s + '/testtest.JPE" alt="" />',
       'Inline image: !testtest.bmp!' =>
-        'Inline image: <img src="/attachments/download/' + a4.id.to_s + '" alt="" />',
+        'Inline image: <img src="/attachments/download/' + a4.id.to_s + '/Testtest.BMP" alt="" />',
     }
 
     attachments = [a1, a2, a3, a4]
@@ -212,9 +212,9 @@ RAW
 
     to_test = {
       'Inline image: !testfile.png!' =>
-        'Inline image: <img src="/attachments/download/' + a2.id.to_s + '" alt="" />',
+        'Inline image: <img src="/attachments/download/' + a2.id.to_s + '/testfile.PNG" alt="" />',
       'Inline image: !Testfile.PNG!' =>
-        'Inline image: <img src="/attachments/download/' + a2.id.to_s + '" alt="" />',
+        'Inline image: <img src="/attachments/download/' + a2.id.to_s + '/testfile.PNG" alt="" />',
     }
     attachments = [a1, a2]
     to_test.each { |text, result| assert_equal "<p>#{result}</p>", textilizable(text, :attachments => attachments) }
@@ -549,11 +549,19 @@ RAW
   end
 
   def test_attachment_links
-    attachment_link = link_to('error281.txt', {:controller => 'attachments', :action => 'download', :id => '1'}, :class => 'attachment')
     to_test = {
-      'attachment:error281.txt'      => attachment_link
+      'attachment:error281.txt' => '<a href="/attachments/download/1/error281.txt" class="attachment">error281.txt</a>'
     }
     to_test.each { |text, result| assert_equal "<p>#{result}</p>", textilizable(text, :attachments => Issue.find(3).attachments), "#{text} failed" }
+  end
+
+  def test_attachment_link_should_link_to_latest_attachment
+    set_tmp_attachments_directory
+    a1 = Attachment.generate!(:filename => "test.txt", :created_on => 1.hour.ago)
+    a2 = Attachment.generate!(:filename => "test.txt")
+
+    assert_equal %(<p><a href="/attachments/download/#{a2.id}/test.txt" class="attachment">test.txt</a></p>),
+      textilizable('attachment:test.txt', :attachments => [a1, a2])
   end
 
   def test_wiki_links
@@ -1063,6 +1071,26 @@ RAW
     assert_equal ::I18n.t(:label_user_anonymous), t
   end
 
+  def test_link_to_attachment
+    a = Attachment.find(3)
+    assert_equal '<a href="/attachments/3/logo.gif">logo.gif</a>',
+      link_to_attachment(a)
+    assert_equal '<a href="/attachments/3/logo.gif">Text</a>',
+      link_to_attachment(a, :text => 'Text')
+    assert_equal '<a href="/attachments/3/logo.gif" class="foo">logo.gif</a>',
+      link_to_attachment(a, :class => 'foo')
+    assert_equal '<a href="/attachments/download/3/logo.gif">logo.gif</a>',
+      link_to_attachment(a, :download => true)
+    assert_equal '<a href="http://test.host/attachments/3/logo.gif">logo.gif</a>',
+      link_to_attachment(a, :only_path => false)
+  end
+
+  def test_thumbnail_tag
+    a = Attachment.find(3)
+    assert_equal '<a href="/attachments/3/logo.gif" title="logo.gif"><img alt="3" src="/attachments/thumbnail/3" /></a>',
+      thumbnail_tag(a)
+  end
+
   def test_link_to_project
     project = Project.find(1)
     assert_equal %(<a href="/projects/ecookbook">eCookbook</a>),
@@ -1073,6 +1101,17 @@ RAW
                  link_to_project(project, {:only_path => false, :jump => 'blah'})
     assert_equal %(<a href="/projects/ecookbook/settings" class="project">eCookbook</a>),
                  link_to_project(project, {:action => 'settings'}, :class => "project")
+  end
+
+  def test_link_to_project_settings
+    project = Project.find(1)
+    assert_equal '<a href="/projects/ecookbook/settings">eCookbook</a>', link_to_project_settings(project)
+
+    project.status = Project::STATUS_CLOSED
+    assert_equal '<a href="/projects/ecookbook">eCookbook</a>', link_to_project_settings(project)
+
+    project.status = Project::STATUS_ARCHIVED
+    assert_equal 'eCookbook', link_to_project_settings(project)
   end
 
   def test_link_to_legacy_project_with_numerical_identifier_should_use_id

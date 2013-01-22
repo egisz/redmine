@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -289,6 +289,8 @@ class Project < ActiveRecord::Base
     @allowed_parents = nil
     @allowed_permissions = nil
     @actions_allowed = nil
+    @start_date = nil
+    @due_date = nil
     super
   end
 
@@ -538,20 +540,20 @@ class Project < ActiveRecord::Base
 
   # The earliest start date of a project, based on it's issues and versions
   def start_date
-    [
+    @start_date ||= [
      issues.minimum('start_date'),
-     shared_versions.collect(&:effective_date),
-     shared_versions.collect(&:start_date)
-    ].flatten.compact.min
+     shared_versions.minimum('effective_date'),
+     Issue.fixed_version(shared_versions).minimum('start_date')
+    ].compact.min
   end
 
   # The latest due date of an issue or version
   def due_date
-    [
+    @due_date ||= [
      issues.maximum('due_date'),
-     shared_versions.collect(&:effective_date),
-     shared_versions.collect {|v| v.fixed_issues.maximum('due_date')}
-    ].flatten.compact.max
+     shared_versions.maximum('effective_date'),
+     Issue.fixed_version(shared_versions).maximum('due_date')
+    ].compact.max
   end
 
   def overdue?
@@ -567,7 +569,7 @@ class Project < ActiveRecord::Base
       total / self_and_descendants.count
     else
       if versions.count > 0
-        total = versions.collect(&:completed_pourcent).sum
+        total = versions.collect(&:completed_percent).sum
 
         total / versions.count
       else

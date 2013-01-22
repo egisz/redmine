@@ -98,6 +98,17 @@ module ObjectHelpers
     version
   end
 
+  def TimeEntry.generate!(attributes={})
+    entry = TimeEntry.new(attributes)
+    entry.user ||= User.find(2)
+    entry.issue ||= Issue.find(1)
+    entry.project ||= entry.issue.project
+    entry.activity ||= TimeEntryActivity.first
+    entry.spent_on ||= Date.today
+    entry.save!
+    entry
+  end
+
   def AuthSource.generate!(attributes={})
     @generated_auth_source_name ||= 'Auth 0'
     @generated_auth_source_name.succ!
@@ -117,5 +128,17 @@ module ObjectHelpers
     yield board if block_given?
     board.save!
     board
+  end
+
+  def Attachment.generate!(attributes={})
+    @generated_filename ||= 'testfile0'
+    @generated_filename.succ!
+    attributes = attributes.dup
+    attachment = Attachment.new(attributes)
+    attachment.container ||= Issue.find(1)
+    attachment.author ||= User.find(2)
+    attachment.filename = @generated_filename if attachment.filename.blank?
+    attachment.save!
+    attachment
   end
 end

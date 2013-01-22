@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -224,6 +224,11 @@ class ContextMenusControllerTest < ActionController::TestCase
     assert_response :success
     assert_template 'context_menu'
     assert_equal [1], assigns(:issues).collect(&:id)
+  end
+
+  def test_should_respond_with_404_without_ids
+    get :issues
+    assert_response 404
   end
 
   def test_time_entries_context_menu

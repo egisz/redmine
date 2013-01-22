@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -517,6 +517,25 @@ class TimelogControllerTest < ActionController::TestCase
       :sort => 'spent_on'
     assert_response :success
     assert_equal [t3, t1, t2], assigns(:entries)
+  end
+
+  def test_index_with_filter_on_issue_custom_field
+    issue = Issue.generate!(:project_id => 1, :tracker_id => 1, :custom_field_values => {2 => 'filter_on_issue_custom_field'})
+    entry = TimeEntry.generate!(:issue => issue, :hours => 2.5)
+
+    get :index, :f => ['issue.cf_2'], :op => {'issue.cf_2' => '='}, :v => {'issue.cf_2' => ['filter_on_issue_custom_field']}
+    assert_response :success
+    assert_equal [entry], assigns(:entries)
+  end
+
+  def test_index_with_issue_custom_field_column
+    issue = Issue.generate!(:project_id => 1, :tracker_id => 1, :custom_field_values => {2 => 'filter_on_issue_custom_field'})
+    entry = TimeEntry.generate!(:issue => issue, :hours => 2.5)
+
+    get :index, :c => %w(project spent_on issue comments hours issue.cf_2)
+    assert_response :success
+    assert_include :'issue.cf_2', assigns(:query).column_names
+    assert_select 'td.issue_cf_2', :text => 'filter_on_issue_custom_field'
   end
 
   def test_index_atom_feed

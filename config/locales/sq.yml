@@ -419,7 +419,6 @@ sq:
   permission_edit_own_time_entries: Edit own time logs
   permission_manage_news: Manage news
   permission_comment_news: Comment news
-  permission_manage_documents: Manage documents
   permission_view_documents: View documents
   permission_manage_files: Manage files
   permission_view_files: View files
@@ -1072,3 +1071,10 @@ sq:
   label_in_the_next_days: in the next
   label_in_the_past_days: in the past
   label_attribute_of_user: User's %{name}
+  text_turning_multiple_off: If you disable multiple values, multiple values will be
+    removed in order to preserve only one value per item.
+  label_attribute_of_issue: Issue's %{name}
+  permission_add_documents: Add documents
+  permission_edit_documents: Edit documents
+  permission_delete_documents: Delete documents
+  label_gantt_progress_line: Progress line

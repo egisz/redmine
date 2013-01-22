@@ -813,7 +813,6 @@ ru:
   permission_manage_project_activities: Управление типами действий для проекта
   permission_manage_boards: Управление форумами
   permission_manage_categories: Управление категориями задач
-  permission_manage_documents: Управление документами
   permission_manage_files: Управление файлами
   permission_manage_issue_relations: Управление связыванием задач
   permission_manage_members: Управление участниками
@@ -1184,3 +1183,10 @@ ru:
   label_in_the_next_days: в средующие дни
   label_in_the_past_days: в прошлые дни
   label_attribute_of_user: Пользователь %{name}
+  text_turning_multiple_off: If you disable multiple values, multiple values will be
+    removed in order to preserve only one value per item.
+  label_attribute_of_issue: Issue's %{name}
+  permission_add_documents: Add documents
+  permission_edit_documents: Edit documents
+  permission_delete_documents: Delete documents
+  label_gantt_progress_line: Progress line

@@ -1,5 +1,5 @@
 # Redmine - project management software
-# Copyright (C) 2006-2012  Jean-Philippe Lang
+# Copyright (C) 2006-2013  Jean-Philippe Lang
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -209,7 +209,7 @@ class IssueQuery < Query
       index = (index ? index + 1 : -1)
       # insert the column after estimated_hours or at the end
       @available_columns.insert index, QueryColumn.new(:spent_hours,
-        :sortable => "(SELECT COALESCE(SUM(hours), 0) FROM #{TimeEntry.table_name} WHERE #{TimeEntry.table_name}.issue_id = #{Issue.table_name}.id)",
+        :sortable => "COALESCE((SELECT SUM(hours) FROM #{TimeEntry.table_name} WHERE #{TimeEntry.table_name}.issue_id = #{Issue.table_name}.id), 0)",
         :default_order => 'desc',
         :caption => :label_spent_time
       )
@@ -270,14 +270,13 @@ class IssueQuery < Query
   # Returns the issues
   # Valid options are :order, :offset, :limit, :include, :conditions
   def issues(options={})
-    order_option = [group_by_sort_order, options[:order]].reject {|s| s.blank?}.join(',')
-    order_option = nil if order_option.blank?
+    order_option = [group_by_sort_order, options[:order]].flatten.reject(&:blank?)
 
     issues = Issue.visible.where(options[:conditions]).all(
       :include => ([:status, :project] + (options[:include] || [])).uniq,
       :conditions => statement,
       :order => order_option,
-      :joins => joins_for_order_statement(order_option),
+      :joins => joins_for_order_statement(order_option.join(',')),
       :limit  => options[:limit],
       :offset => options[:offset]
     )
@@ -295,13 +294,12 @@ class IssueQuery < Query
 
   # Returns the issues ids
   def issue_ids(options={})
-    order_option = [group_by_sort_order, options[:order]].reject {|s| s.blank?}.join(',')
-    order_option = nil if order_option.blank?
+    order_option = [group_by_sort_order, options[:order]].flatten.reject(&:blank?)
 
     Issue.visible.scoped(:conditions => options[:conditions]).scoped(:include => ([:status, :project] + (options[:include] || [])).uniq,
                      :conditions => statement,
                      :order => order_option,
-                     :joins => joins_for_order_statement(order_option),
+                     :joins => joins_for_order_statement(order_option.join(',')),
                      :limit  => options[:limit],
                      :offset => options[:offset]).find_ids
   rescue ::ActiveRecord::StatementInvalid => e
