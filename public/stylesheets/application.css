@@ -25,7 +25,7 @@ h4 {border-bottom: 1px dotted #bbb;}
 
 #account {float:right;}
 
-#header {height:5.3em;margin:0;background-color:#628DB6;color:#f8f8f8; padding: 4px 8px 0px 6px; position:relative;}
+#header {min-height:5.3em;margin:0;background-color:#628DB6;color:#f8f8f8; padding: 4px 8px 20px 6px; position:relative;}
 #header a {color:#f8f8f8;}
 #header h1 a.ancestor { font-size: 80%; }
 #quick-search {float:right;}
@@ -454,6 +454,8 @@ table.fields_permissions td.readonly {background:#ddd;}
 table.fields_permissions td.required {background:#d88;}
 
 textarea#custom_field_possible_values {width: 99%}
+textarea#custom_field_default_value {width: 99%}
+
 input#content_comments {width: 99%}
 
 p.pagination {margin-top:8px; font-size: 90%}
@@ -556,13 +558,14 @@ em.info.error {padding-left:20px; background:url(../images/exclamation.png) no-r
 
 textarea.text_cf {width:90%;}
 
-/* Project members tab */
-div#tab-content-members .splitcontentleft, div#tab-content-memberships .splitcontentleft, div#tab-content-users .splitcontentleft { width: 64% }
-div#tab-content-members .splitcontentright, div#tab-content-memberships .splitcontentright, div#tab-content-users .splitcontentright { width: 34% }
-div#tab-content-members fieldset, div#tab-content-memberships fieldset, div#tab-content-users fieldset { padding:1em; margin-bottom: 1em; }
-div#tab-content-members fieldset legend, div#tab-content-memberships fieldset legend, div#tab-content-users fieldset legend { font-weight: bold; }
-div#tab-content-members fieldset label, div#tab-content-memberships fieldset label, div#tab-content-users fieldset label { display: block; }
-div#tab-content-members #principals, div#tab-content-users #principals { max-height: 400px; overflow:auto; }
+#tab-content-modules fieldset p {margin:3px 0 4px 0;}
+
+#tab-content-members .splitcontentleft, #tab-content-memberships .splitcontentleft, #tab-content-users .splitcontentleft {width: 64%;}
+#tab-content-members .splitcontentright, #tab-content-memberships .splitcontentright, #tab-content-users .splitcontentright {width: 34%;}
+#tab-content-members fieldset, #tab-content-memberships fieldset, #tab-content-users fieldset {padding:1em; margin-bottom: 1em;}
+#tab-content-members fieldset legend, #tab-content-memberships fieldset legend, #tab-content-users fieldset legend {font-weight: bold;}
+#tab-content-members fieldset label, #tab-content-memberships fieldset label, #tab-content-users fieldset label {display: block;}
+#tab-content-members #principals, #tab-content-users #principals {max-height: 400px; overflow: auto;}
 
 #users_for_watcher {height: 200px; overflow:auto;}
 #users_for_watcher label {display: block;}
@@ -578,8 +581,6 @@ input.autocomplete {
 input.autocomplete.ajax-loading {
   background-image: url(../images/loading.gif);
 }
-
-* html div#tab-content-members fieldset div { height: 450px; }
 
 /***** Flash & error messages ****/
 #errorExplanation, div.flash, .nodata, .warning, .conflict {

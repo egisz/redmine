@@ -316,8 +316,8 @@ module ApplicationHelper
 
   def principals_check_box_tags(name, principals)
     s = ''
-    principals.sort.each do |principal|
-      s << "<label>#{ check_box_tag name, principal.id, false } #{h principal}</label>\n"
+    principals.each do |principal|
+      s << "<label>#{ check_box_tag name, principal.id, false, :id => nil } #{h principal}</label>\n"
     end
     s.html_safe
   end
@@ -588,9 +588,9 @@ module ApplicationHelper
       esc, all, page, title = $1, $2, $3, $5
       if esc.nil?
         if page =~ /^([^\:]+)\:(.*)$/
-          link_project = Project.find_by_identifier($1) || Project.find_by_name($1)
-          page = $2
-          title ||= $1 if page.blank?
+          identifier, page = $1, $2
+          link_project = Project.find_by_identifier(identifier) || Project.find_by_name(identifier)
+          title ||= identifier if page.blank?
         end
 
         if link_project && link_project.wiki
@@ -658,10 +658,11 @@ module ApplicationHelper
   #     identifier:document:"Some document"
   #     identifier:version:1.0.0
   #     identifier:source:some/file
-  def parse_redmine_links(text, project, obj, attr, only_path, options)
-    text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-_]+):)?(attachment|document|version|forum|news|message|project|commit|source|export)?(((#)|((([a-z0-9\-]+)\|)?(r)))((\d+)((#note)?-(\d+))?)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]][^A-Za-z0-9_/])|,|\s|\]|<|$)}) do |m|
+  def parse_redmine_links(text, default_project, obj, attr, only_path, options)
+    text.gsub!(%r{([\s\(,\-\[\>]|^)(!)?(([a-z0-9\-_]+):)?(attachment|document|version|forum|news|message|project|commit|source|export)?(((#)|((([a-z0-9\-_]+)\|)?(r)))((\d+)((#note)?-(\d+))?)|(:)([^"\s<>][^\s<>]*?|"[^"]+?"))(?=(?=[[:punct:]][^A-Za-z0-9_/])|,|\s|\]|<|$)}) do |m|
       leading, esc, project_prefix, project_identifier, prefix, repo_prefix, repo_identifier, sep, identifier, comment_suffix, comment_id = $1, $2, $3, $4, $5, $10, $11, $8 || $12 || $18, $14 || $19, $15, $17
       link = nil
+      project = default_project
       if project_identifier
         project = Project.visible.find_by_identifier(project_identifier)
       end
@@ -747,7 +748,7 @@ module ApplicationHelper
           when 'commit', 'source', 'export'
             if project
               repository = nil
-              if name =~ %r{^(([a-z0-9\-]+)\|)(.+)$}
+              if name =~ %r{^(([a-z0-9\-_]+)\|)(.+)$}
                 repo_prefix, repo_identifier, name = $1, $2, $3
                 repository = project.repositories.detect {|repo| repo.identifier == repo_identifier}
               else
@@ -1075,7 +1076,7 @@ module ApplicationHelper
                    "var datepickerOptions={dateFormat: 'yy-mm-dd', firstDay: #{start_of_week}, " +
                      "showOn: 'button', buttonImageOnly: true, buttonImage: '" + 
                      path_to_image('/images/calendar.png') +
-                     "', showButtonPanel: true};")
+                     "', showButtonPanel: true, showWeek: true, showOtherMonths: true, selectOtherMonths: true};")
         jquery_locale = l('jquery.locale', :default => current_language.to_s)
         unless jquery_locale == 'en'
           tags << javascript_include_tag("i18n/jquery.ui.datepicker-#{jquery_locale}.js") 

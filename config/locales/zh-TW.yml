@@ -412,6 +412,7 @@
   field_timeout: "逾時 (單位: 秒)"
   field_board_parent: 父論壇
   field_private_notes: 私人筆記
+  field_inherit_members: 繼承父專案成員
 
   setting_app_title: 標題
   setting_app_subtitle: 副標題
@@ -480,6 +481,7 @@
   setting_thumbnails_enabled: 顯示附加檔案的縮圖
   setting_thumbnails_size: "縮圖大小 (單位: 像素 pixels)"
   setting_non_working_week_days: 非工作日
+  setting_jsonp_enabled: 啟用 JSONP 支援
 
   permission_add_project: 建立專案
   permission_add_subprojects: 建立子專案

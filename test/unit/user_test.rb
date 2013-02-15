@@ -25,13 +25,16 @@ class UserTest < ActiveSupport::TestCase
             :issue_categories, :enumerations, :issues,
             :journals, :journal_details,
             :groups_users,
-            :enabled_modules,
-            :workflows
+            :enabled_modules
 
   def setup
     @admin = User.find(1)
     @jsmith = User.find(2)
     @dlopper = User.find(3)
+  end
+
+  def test_sorted_scope_should_sort_user_by_display_name
+    assert_equal User.all.map(&:name).map(&:downcase).sort, User.sorted.all.map(&:name).map(&:downcase)
   end
 
   def test_generate
@@ -1014,9 +1017,15 @@ class UserTest < ActiveSupport::TestCase
         assert ! @user.notify_about?(@issue)
       end
     end
+  end
 
-    context "other events" do
-      should 'be added and tested'
+  def test_notify_about_news
+    user = User.generate!
+    news = News.new
+
+    User::MAIL_NOTIFICATION_OPTIONS.map(&:first).each do |option|
+      user.mail_notification = option
+      assert_equal (option != 'none'), user.notify_about?(news)
     end
   end
 

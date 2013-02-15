@@ -315,6 +315,7 @@ de:
   field_hours: Stunden
   field_identifier: Kennung
   field_identity_url: OpenID-URL
+  field_inherit_members: Benutzer vererben
   field_is_closed: Ticket geschlossen
   field_is_default: Standardeinstellung
   field_is_filter: Als Filter benutzen
@@ -415,7 +416,7 @@ de:
   label_api_access_key_created_on: Der API-Zugriffsschlüssel wurde vor %{value} erstellt
   label_applied_status: Zugewiesener Status
   label_ascending: Aufsteigend
-  label_assigned_to_me_issues: Mir zugewiesen
+  label_assigned_to_me_issues: Mir zugewiesene Tickets
   label_associated_revisions: Zugehörige Revisionen
   label_attachment: Datei
   label_attachment_delete: Anhang löschen
@@ -544,7 +545,7 @@ de:
   label_help: Hilfe
   label_history: Historie
   label_home: Hauptseite
-  label_in: an
+  label_in: in
   label_in_less_than: in weniger als
   label_in_more_than: in mehr als
   label_in_the_next_days: in den nächsten
@@ -617,7 +618,7 @@ de:
   label_more_than_ago: vor mehr als
   label_my_account: Mein Konto
   label_my_page: Meine Seite
-  label_my_page_block: Bereich "Meine Seite"
+  label_my_page_block: Verfügbare Widgets
   label_my_projects: Meine Projekte
   label_my_queries: Meine eigenen Abfragen
   label_new: Neu
@@ -667,8 +668,8 @@ de:
   label_project_plural: Projekte
   label_public_projects: Öffentliche Projekte
   label_query: Benutzerdefinierte Abfrage
-  label_query_new: Neuer Bericht
-  label_query_plural: Benutzerdefinierte Berichte
+  label_query_new: Neue Abfrage
+  label_query_plural: Benutzerdefinierte Abfragen
   label_read: Lesen...
   label_readonly: Nur-Lese-Zugriff
   label_register: Registrieren
@@ -684,7 +685,7 @@ de:
   label_reply_plural: Antworten
   label_report: Bericht
   label_report_plural: Berichte
-  label_reported_issues: Gemeldete Tickets
+  label_reported_issues: Erstellte Tickets
   label_repository: Projektarchiv
   label_repository_new: Neues Repository
   label_repository_plural: Projektarchive
@@ -976,6 +977,7 @@ de:
   setting_issue_group_assignment: Ticketzuweisung an Gruppen erlauben
   setting_issue_list_default_columns: Standard-Spalten in der Ticket-Auflistung
   setting_issues_export_limit: Max. Anzahl Tickets bei CSV/PDF-Export
+  setting_jsonp_enabled: JSONP Unterstützung aktivieren
   setting_login_required: Authentifizierung erforderlich
   setting_mail_from: E-Mail-Absender
   setting_mail_handler_api_enabled: Abruf eingehender E-Mails aktivieren

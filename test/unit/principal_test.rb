@@ -49,64 +49,60 @@ class PrincipalTest < ActiveSupport::TestCase
     assert_equal [], Principal.not_member_of([]).sort
   end
 
-  context "#like" do
-    setup do
-      Principal.create!(:login => 'login')
-      Principal.create!(:login => 'login2')
-
-      Principal.create!(:firstname => 'firstname')
-      Principal.create!(:firstname => 'firstname2')
-
-      Principal.create!(:lastname => 'lastname')
-      Principal.create!(:lastname => 'lastname2')
-
-      Principal.create!(:mail => 'mail@example.com')
-      Principal.create!(:mail => 'mail2@example.com')
-
-      @palmer = Principal.create!(:firstname => 'David', :lastname => 'Palmer')
+  def test_sorted_scope_should_sort_users_before_groups
+    scope = Principal.where("type <> ?", 'AnonymousUser')
+    expected_order = scope.all.sort do |a, b|
+      if a.is_a?(User) && b.is_a?(Group)
+        -1
+      elsif a.is_a?(Group) && b.is_a?(User)
+        1
+      else
+        a.name.downcase <=> b.name.downcase
+      end
     end
+    assert_equal expected_order.map(&:name).map(&:downcase), scope.sorted.all.map(&:name).map(&:downcase)
+  end
 
-    should "search login" do
-      results = Principal.like('login')
+  test "like scope should search login" do
+    results = Principal.like('jsmi')
 
-      assert_equal 2, results.count
-      assert results.all? {|u| u.login.match(/login/) }
-    end
+    assert results.any?
+    assert results.all? {|u| u.login.match(/jsmi/i) }
+  end
 
-    should "search firstname" do
-      results = Principal.like('firstname')
+  test "like scope should search firstname" do
+    results = Principal.like('john')
 
-      assert_equal 2, results.count
-      assert results.all? {|u| u.firstname.match(/firstname/) }
-    end
+    assert results.any?
+    assert results.all? {|u| u.firstname.match(/john/i) }
+  end
 
-    should "search lastname" do
-      results = Principal.like('lastname')
+  test "like scope should search lastname" do
+    results = Principal.like('smi')
 
-      assert_equal 2, results.count
-      assert results.all? {|u| u.lastname.match(/lastname/) }
-    end
+    assert results.any?
+    assert results.all? {|u| u.lastname.match(/smi/i) }
+  end
 
-    should "search mail" do
-      results = Principal.like('mail')
+  test "like scope should search mail" do
+    results = Principal.like('somenet')
 
-      assert_equal 2, results.count
-      assert results.all? {|u| u.mail.match(/mail/) }
-    end
+    assert results.any?
+    assert results.all? {|u| u.mail.match(/somenet/i) }
+  end
 
-    should "search firstname and lastname" do
-      results = Principal.like('david palm')
+  test "like scope should search firstname and lastname" do
+    results = Principal.like('john smi')
 
-      assert_equal 1, results.count
-      assert_equal @palmer, results.first
-    end
+    assert_equal 1, results.count
+    assert_equal User.find(2), results.first
+  end
 
-    should "search lastname and firstname" do
-      results = Principal.like('palmer davi')
+  test "like scope should search lastname and firstname" do
+    results = Principal.like('smith joh')
 
-      assert_equal 1, results.count
-      assert_equal @palmer, results.first
-    end
+    assert_equal 1, results.count
+    assert_equal User.find(2), results.first
   end
 
   def test_like_scope_with_cyrillic_name

@@ -127,7 +127,7 @@ Redmine::AccessControl.map do |map|
     map.permission :save_queries, {:queries => [:new, :create, :edit, :update, :destroy]}, :require => :loggedin
     # Watchers
     map.permission :view_issue_watchers, {}, :read => true
-    map.permission :add_issue_watchers, {:watchers => :new}
+    map.permission :add_issue_watchers, {:watchers => [:new, :create, :append, :autocomplete_for_user]}
     map.permission :delete_issue_watchers, {:watchers => :destroy}
   end
 
@@ -208,7 +208,7 @@ Redmine::MenuManager.map :account_menu do |menu|
   menu.push :login, :signin_path, :if => Proc.new { !User.current.logged? }
   menu.push :register, :register_path, :if => Proc.new { !User.current.logged? && Setting.self_registration? }
   menu.push :my_account, { :controller => 'my', :action => 'account' }, :if => Proc.new { User.current.logged? }
-  menu.push :logout, :signout_path, :if => Proc.new { User.current.logged? }
+  menu.push :logout, :signout_path, :html => {:method => 'post'}, :if => Proc.new { User.current.logged? }
 end
 
 Redmine::MenuManager.map :application_menu do |menu|

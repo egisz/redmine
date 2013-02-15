@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.12'
 gem "jquery-rails", "~> 2.0.2"
 gem "i18n", "~> 0.6.0"
 gem "coderay", "~> 1.0.6"
@@ -36,9 +36,10 @@ end
 
 # Include database gems for the adapters found in the database
 # configuration file
+require 'erb'
 database_file = File.join(File.dirname(__FILE__), "config/database.yml")
 if File.exist?(database_file)
-  database_config = YAML.load_file(database_file)
+  database_config = YAML::load(ERB.new(IO.read(database_file)).result)
   adapters = database_config.values.map {|c| c['adapter']}.compact.uniq
   if adapters.any?
     adapters.each do |adapter|
@@ -73,13 +74,9 @@ group :development do
 end
 
 group :test do
-  gem "shoulda", "~> 2.11"
-  # Shoulda does not work nice on Ruby 1.9.3 and JRuby 1.7.
-  # It seems to need test-unit explicitely.
-  platforms = [:mri_19]
-  platforms << :jruby if defined?(JRUBY_VERSION) && JRUBY_VERSION >= "1.7"
-  gem "test-unit", :platforms => platforms
-  gem "mocha", "0.12.3"
+  gem "shoulda", "~> 3.3.2"
+  gem "mocha"
+  gem 'capybara', '~> 2.0.0'
 end
 
 local_gemfile = File.join(File.dirname(__FILE__), "Gemfile.local")

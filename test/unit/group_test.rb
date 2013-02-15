@@ -19,13 +19,11 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class GroupTest < ActiveSupport::TestCase
   fixtures :projects, :trackers, :issue_statuses, :issues,
-           :enumerations, :users, :issue_categories,
+           :enumerations, :users,
            :projects_trackers,
            :roles,
            :member_roles,
            :members,
-           :enabled_modules,
-           :workflows,
            :groups_users
 
   include Redmine::I18n
@@ -35,6 +33,14 @@ class GroupTest < ActiveSupport::TestCase
     assert g.save
     g.reload
     assert_equal 'New group', g.name
+  end
+
+  def test_name_should_accept_255_characters
+    name = 'a' * 255
+    g = Group.new(:name => name)
+    assert g.save
+    g.reload
+    assert_equal name, g.name
   end
 
   def test_blank_name_error_message

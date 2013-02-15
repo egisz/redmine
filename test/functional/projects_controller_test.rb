@@ -288,6 +288,25 @@ class ProjectsControllerTest < ActionController::TestCase
     end
   end
 
+  def test_create_subproject_with_inherit_members_should_inherit_members
+    Role.find_by_name('Manager').add_permission! :add_subprojects
+    parent = Project.find(1)
+    @request.session[:user_id] = 2
+
+    assert_difference 'Project.count' do
+      post :create, :project => {
+        :name => 'inherited', :identifier => 'inherited', :parent_id => parent.id, :inherit_members => '1'
+      }
+      assert_response 302
+    end
+
+    project = Project.order('id desc').first
+    assert_equal 'inherited', project.name
+    assert_equal parent, project.parent
+    assert project.memberships.count > 0
+    assert_equal parent.memberships.count, project.memberships.count
+  end
+
   def test_create_should_preserve_modules_on_validation_failure
     with_settings :default_projects_modules => ['issue_tracking', 'repository'] do
       @request.session[:user_id] = 1
@@ -371,6 +390,15 @@ class ProjectsControllerTest < ActionController::TestCase
     get :settings, :id => 1
     assert_response :success
     assert_template 'settings'
+  end
+
+  def test_settings_of_subproject
+    @request.session[:user_id] = 2
+    get :settings, :id => 'private-child'
+    assert_response :success
+    assert_template 'settings'
+
+    assert_select 'input[type=checkbox][name=?]', 'project[inherit_members]'
   end
 
   def test_settings_should_be_denied_for_member_on_closed_project
