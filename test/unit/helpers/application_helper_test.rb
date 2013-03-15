@@ -84,7 +84,11 @@ class ApplicationHelperTest < ActionView::TestCase
       # escaping
       'http://foo"bar' => '<a class="external" href="http://foo&quot;bar">http://foo&quot;bar</a>',
       # wrap in angle brackets
-      '<http://foo.bar>' => '&lt;<a class="external" href="http://foo.bar">http://foo.bar</a>&gt;'
+      '<http://foo.bar>' => '&lt;<a class="external" href="http://foo.bar">http://foo.bar</a>&gt;',
+      # invalid urls
+      'http://' => 'http://',
+      'www.' => 'www.',
+      'test-www.bar.com' => 'test-www.bar.com',
     }
     to_test.each { |text, result| assert_equal "<p>#{result}</p>", textilizable(text) }
   end
@@ -101,8 +105,11 @@ class ApplicationHelperTest < ActionView::TestCase
   end
 
   def test_auto_mailto
-    assert_equal '<p><a class="email" href="mailto:test@foo.bar">test@foo.bar</a></p>',
-      textilizable('test@foo.bar')
+    to_test = {
+      'test@foo.bar' => '<a class="email" href="mailto:test@foo.bar">test@foo.bar</a>',
+      'test@www.foo.bar' => '<a class="email" href="mailto:test@www.foo.bar">test@www.foo.bar</a>',
+    }
+    to_test.each { |text, result| assert_equal "<p>#{result}</p>", textilizable(text) }
   end
 
   def test_inline_images
@@ -253,9 +260,9 @@ RAW
 
   def test_redmine_links
     issue_link = link_to('#3', {:controller => 'issues', :action => 'show', :id => 3},
-                               :class => 'issue status-1 priority-4 priority-lowest overdue', :title => 'Error 281 when updating a recipe (New)')
+                               :class => Issue.find(3).css_classes, :title => 'Error 281 when updating a recipe (New)')
     note_link = link_to('#3', {:controller => 'issues', :action => 'show', :id => 3, :anchor => 'note-14'},
-                               :class => 'issue status-1 priority-4 priority-lowest overdue', :title => 'Error 281 when updating a recipe (New)')
+                               :class => Issue.find(3).css_classes, :title => 'Error 281 when updating a recipe (New)')
 
     changeset_link = link_to('r1', {:controller => 'repositories', :action => 'revision', :id => 'ecookbook', :rev => 1},
                                    :class => 'changeset', :title => 'My very first commit')
@@ -745,7 +752,7 @@ RAW
 
     expected = <<-EXPECTED
 <p><a href="/projects/ecookbook/wiki/CookBook_documentation" class="wiki-page">CookBook documentation</a></p>
-<p><a href="/issues/1" class="issue status-1 priority-4 priority-lowest" title="Can&#x27;t print recipes (New)">#1</a></p>
+<p><a href="/issues/1" class="#{Issue.find(1).css_classes}" title="Can&#x27;t print recipes (New)">#1</a></p>
 <pre>
 [[CookBook documentation]]
 

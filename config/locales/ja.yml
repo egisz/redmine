@@ -401,6 +401,7 @@ ja:
   setting_commit_logtime_enabled: コミット時に作業時間を記録する
   setting_commit_logtime_activity_id: 作業時間の作業分類
   setting_gantt_items_limit: ガントチャート最大表示項目数
+  setting_default_projects_tracker_ids: 新規プロジェクトにおいてデフォルトで有効になるトラッカー
 
   permission_add_project: プロジェクトの追加
   permission_add_subprojects: サブプロジェクトの追加
@@ -904,9 +905,9 @@ ja:
   text_journal_set_to: "%{label} を %{value} にセット"
   text_journal_deleted: "%{label} を削除 (%{old})"
   text_journal_added: "%{label} %{value} を追加"
-  text_tip_issue_begin_day: この日に開始するタスク
-  text_tip_issue_end_day: この日に終了するタスク
-  text_tip_issue_begin_end_day: この日のうちに開始して終了するタスク
+  text_tip_issue_begin_day: この日に開始するチケット
+  text_tip_issue_end_day: この日に終了するチケット
+  text_tip_issue_begin_end_day: この日に開始・終了するチケット
   text_caracters_maximum: "最大%{count}文字です。"
   text_caracters_minimum: "最低%{count}文字の長さが必要です"
   text_length_between: "長さは%{min}から%{max}文字までです。"
@@ -1112,4 +1113,7 @@ ja:
   permission_edit_documents: 文書の編集
   permission_delete_documents: 文書の削除
   setting_jsonp_enabled: JSONPを有効にする
-  field_inherit_members: Inherit members
+  field_inherit_members: メンバーを継承
+  field_closed_on: 終了日
+  field_generate_password: パスワードを自動生成
+  label_total_time: 合計

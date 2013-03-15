@@ -20,6 +20,7 @@ class IssueQuery < Query
   self.queried_class = Issue
 
   self.available_columns = [
+    QueryColumn.new(:id, :sortable => "#{Issue.table_name}.id", :default_order => 'desc', :caption => '#', :frozen => true),
     QueryColumn.new(:project, :sortable => "#{Project.table_name}.name", :groupable => true),
     QueryColumn.new(:tracker, :sortable => "#{Tracker.table_name}.position", :groupable => true),
     QueryColumn.new(:parent, :sortable => ["#{Issue.table_name}.root_id", "#{Issue.table_name}.lft ASC"], :default_order => 'desc', :caption => :field_parent_issue),
@@ -36,6 +37,7 @@ class IssueQuery < Query
     QueryColumn.new(:estimated_hours, :sortable => "#{Issue.table_name}.estimated_hours"),
     QueryColumn.new(:done_ratio, :sortable => "#{Issue.table_name}.done_ratio", :groupable => true),
     QueryColumn.new(:created_on, :sortable => "#{Issue.table_name}.created_on", :default_order => 'desc'),
+    QueryColumn.new(:closed_on, :sortable => "#{Issue.table_name}.closed_on", :default_order => 'desc'),
     QueryColumn.new(:relations, :caption => :label_related_issues),
     QueryColumn.new(:description, :inline => false)
   ]
@@ -145,6 +147,7 @@ class IssueQuery < Query
     add_available_filter "subject", :type => :text
     add_available_filter "created_on", :type => :date_past
     add_available_filter "updated_on", :type => :date_past
+    add_available_filter "closed_on", :type => :date_past
     add_available_filter "start_date", :type => :date
     add_available_filter "due_date", :type => :date
     add_available_filter "estimated_hours", :type => :float
@@ -212,10 +215,6 @@ class IssueQuery < Query
     }
 
     @available_columns
-  end
-
-  def sortable_columns
-    {'id' => "#{Issue.table_name}.id"}.merge(super)
   end
 
   def default_columns_names

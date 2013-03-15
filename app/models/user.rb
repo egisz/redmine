@@ -81,7 +81,7 @@ class User < Principal
 
   acts_as_customizable
 
-  attr_accessor :password, :password_confirmation
+  attr_accessor :password, :password_confirmation, :generate_password
   attr_accessor :last_before_login_on
   # Prevents unauthorized assignments
   attr_protected :login, :admin, :password, :password_confirmation, :hashed_password
@@ -92,7 +92,7 @@ class User < Principal
   validates_presence_of :login, :firstname, :lastname, :mail, :if => Proc.new { |user| !user.is_a?(AnonymousUser) }
   validates_uniqueness_of :login, :if => Proc.new { |user| user.login_changed? && user.login.present? }, :case_sensitive => false
   validates_uniqueness_of :mail, :if => Proc.new { |user| user.mail_changed? && user.mail.present? }, :case_sensitive => false
-  # Login must contain lettres, numbers, underscores only
+  # Login must contain letters, numbers, underscores only
   validates_format_of :login, :with => /\A[a-z0-9_\-@\.]*\z/i
   validates_length_of :login, :maximum => LOGIN_LENGTH_LIMIT
   validates_length_of :firstname, :lastname, :maximum => 30
@@ -103,7 +103,7 @@ class User < Principal
   validate :validate_password_length
 
   before_create :set_mail_notification
-  before_save   :update_hashed_password
+  before_save   :generate_password_if_needed, :update_hashed_password
   before_destroy :remove_references_before_destroy
 
   scope :in_group, lambda {|group|
@@ -128,10 +128,12 @@ class User < Principal
     end
   end
 
+  alias :base_reload :reload
   def reload(*args)
     @name = nil
     @projects_by_role = nil
-    super
+    @membership_by_project_id = nil
+    base_reload(*args)
   end
 
   def mail=(arg)
@@ -145,7 +147,7 @@ class User < Principal
       begin
         write_attribute(:identity_url, OpenIdAuthentication.normalize_identifier(url))
       rescue OpenIdAuthentication::InvalidOpenId
-        # Invlaid url, don't save
+        # Invalid url, don't save
       end
     end
     self.read_attribute(:identity_url)
@@ -274,13 +276,16 @@ class User < Principal
     return auth_source.allow_password_changes?
   end
 
-  # Generate and set a random password.  Useful for automated user creation
-  # Based on Token#generate_token_value
-  #
-  def random_password
+  def generate_password?
+    generate_password == '1' || generate_password == true
+  end
+
+  # Generate and set a random password on given length
+  def random_password(length=40)
     chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
+    chars -= %w(0 O 1 l)
     password = ''
-    40.times { |i| password << chars[rand(chars.size-1)] }
+    length.times {|i| password << chars[SecureRandom.random_number(chars.size)] }
     self.password = password
     self.password_confirmation = password
     self
@@ -415,6 +420,17 @@ class User < Principal
     !logged?
   end
 
+  # Returns user's membership for the given project
+  # or nil if the user is not a member of project
+  def membership(project)
+    project_id = project.is_a?(Project) ? project.id : project
+
+    @membership_by_project_id ||= Hash.new {|h, project_id|
+      h[project_id] = memberships.where(:project_id => project_id).first
+    }
+    @membership_by_project_id[project_id]
+  end
+
   # Return user's roles for project
   def roles_for_project(project)
     roles = []
@@ -422,7 +438,7 @@ class User < Principal
     return roles if project.nil? || project.archived?
     if logged?
       # Find project membership
-      membership = memberships.detect {|m| m.project_id == project.id}
+      membership = membership(project)
       if membership
         roles = membership.roles
       else
@@ -438,7 +454,7 @@ class User < Principal
 
   # Return true if the user is a member of project
   def member_of?(project)
-    roles_for_project(project).any? {|role| role.member?}
+    projects.to_a.include?(project)
   end
 
   # Returns a hash of user's projects grouped by roles
@@ -541,6 +557,7 @@ class User < Principal
 
   safe_attributes 'status',
     'auth_source_id',
+    'generate_password',
     :if => lambda {|user, current_user| current_user.admin?}
 
   safe_attributes 'group_ids',
@@ -610,6 +627,7 @@ class User < Principal
   protected
 
   def validate_password_length
+    return if password.blank? && generate_password?
     # Password length validation based on setting
     if !password.nil? && password.size < Setting.password_min_length.to_i
       errors.add(:password, :too_short, :count => Setting.password_min_length.to_i)
@@ -617,6 +635,13 @@ class User < Principal
   end
 
   private
+
+  def generate_password_if_needed
+    if generate_password? && auth_source.nil?
+      length = [Setting.password_min_length.to_i + 2, 10].max
+      random_password(length)
+    end
+  end
 
   # Removes references that are not handled by associations
   # Things that are not deleted are reassociated with the anonymous user
@@ -677,6 +702,10 @@ class AnonymousUser < User
 
   def pref
     UserPreference.new(:user => self)
+  end
+
+  def member_of?(project)
+    false
   end
 
   # Anonymous user can not be destroyed

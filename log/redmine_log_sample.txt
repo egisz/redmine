@@ -1,0 +1,349 @@
+Started GET "/" for 127.0.0.1 at Wed Jan 23 18:13:52 +0100 2013
+Processing by WelcomeController#index as HTML
+  [1m[36m (1.4ms)[0m  [1mSELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` [0m
+  [1m[35mSetting Load (0.6ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'rest_api_enabled' LIMIT 1
+  [1m[36mAnonymousUser Load (0.7ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('AnonymousUser') LIMIT 1[0m
+  Current user: anonymous
+  [1m[35mSetting Load (0.5ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'login_required' LIMIT 1
+  [1m[36mRole Load (0.6ms)[0m  [1mSELECT `roles`.* FROM `roles` WHERE `roles`.`builtin` = 2 LIMIT 1[0m
+  [1m[35mSQL (0.9ms)[0m  SELECT `news`.`id` AS t0_r0, `news`.`project_id` AS t0_r1, `news`.`title` AS t0_r2, `news`.`summary` AS t0_r3, `news`.`description` AS t0_r4, `news`.`author_id` AS t0_r5, `news`.`created_on` AS t0_r6, `news`.`comments_count` AS t0_r7, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `users`.`id` AS t2_r0, `users`.`login` AS t2_r1, `users`.`hashed_password` AS t2_r2, `users`.`firstname` AS t2_r3, `users`.`lastname` AS t2_r4, `users`.`mail` AS t2_r5, `users`.`admin` AS t2_r6, `users`.`status` AS t2_r7, `users`.`last_login_on` AS t2_r8, `users`.`language` AS t2_r9, `users`.`auth_source_id` AS t2_r10, `users`.`created_on` AS t2_r11, `users`.`updated_on` AS t2_r12, `users`.`type` AS t2_r13, `users`.`identity_url` AS t2_r14, `users`.`mail_notification` AS t2_r15, `users`.`salt` AS t2_r16 FROM `news` LEFT OUTER JOIN `projects` ON `projects`.`id` = `news`.`project_id` LEFT OUTER JOIN `users` ON `users`.`id` = `news`.`author_id` AND `users`.`type` IN ('User', 'AnonymousUser') WHERE (((projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='news')) AND (projects.is_public = 1))) ORDER BY news.created_on DESC LIMIT 5
+  [1m[36mCACHE (0.9ms)[0m  [1mSELECT `roles`.* FROM `roles` WHERE `roles`.`builtin` = 2 LIMIT 1[0m
+  [1m[35mProject Load (0.8ms)[0m  SELECT `projects`.* FROM `projects` WHERE (((projects.status <> 9) AND (projects.is_public = 1))) ORDER BY created_on DESC LIMIT 5
+  [1m[36mSetting Load (0.7ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'welcome_text' LIMIT 1[0m
+  [1m[35mSetting Load (0.7ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'time_format' LIMIT 1
+  [1m[36mSetting Load (0.8ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'date_format' LIMIT 1[0m
+  [1m[35mSetting Load (0.6ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'app_title' LIMIT 1
+  Rendered welcome/index.html.erb within layouts/base (58.4ms)
+  [1m[36mSetting Load (0.8ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'ui_theme' LIMIT 1[0m
+  [1m[35mSetting Load (0.8ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'self_registration' LIMIT 1
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_update_menu.html.erb (0.5ms)
+Completed 200 OK in 492ms (Views: 202.3ms | ActiveRecord: 21.5ms)
+
+
+Started GET "/projects" for 127.0.0.1 at Wed Jan 23 18:14:01 +0100 2013
+Processing by ProjectsController#index as HTML
+  [1m[36m (0.6ms)[0m  [1mSELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` [0m
+  [1m[35mAnonymousUser Load (0.4ms)[0m  SELECT `users`.* FROM `users` WHERE `users`.`type` IN ('AnonymousUser') LIMIT 1
+  Current user: anonymous
+  [1m[36mRole Load (0.9ms)[0m  [1mSELECT `roles`.* FROM `roles` WHERE `roles`.`builtin` = 2 LIMIT 1[0m
+  [1m[35mProject Load (1.0ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`status` = 1 AND (((projects.status <> 9) AND (projects.is_public = 1))) ORDER BY lft
+  [1m[36mSQL (0.9ms)[0m  [1mSELECT `members`.`id` AS t0_r0, `members`.`user_id` AS t0_r1, `members`.`project_id` AS t0_r2, `members`.`created_on` AS t0_r3, `members`.`mail_notification` AS t0_r4, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `roles`.`id` AS t2_r0, `roles`.`name` AS t2_r1, `roles`.`position` AS t2_r2, `roles`.`assignable` AS t2_r3, `roles`.`builtin` AS t2_r4, `roles`.`permissions` AS t2_r5, `roles`.`issues_visibility` AS t2_r6 FROM `members` LEFT OUTER JOIN `projects` ON `projects`.`id` = `members`.`project_id` LEFT OUTER JOIN `member_roles` ON `member_roles`.`member_id` = `members`.`id` LEFT OUTER JOIN `roles` ON `roles`.`id` = `member_roles`.`role_id` WHERE `members`.`user_id` = 1212 AND (projects.status<>9) ORDER BY projects.name[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` WHERE `roles`.`builtin` = 2 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` WHERE `roles`.`builtin` = 2 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` WHERE `roles`.`builtin` = 2 LIMIT 1
+  [1m[36mSetting Load (0.7ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'plugin_redmine_unicall' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` WHERE `roles`.`builtin` = 2 LIMIT 1
+  Rendered projects/index.html.erb within layouts/base (173.5ms)
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_update_menu.html.erb (0.1ms)
+Completed 200 OK in 216ms (Views: 190.0ms | ActiveRecord: 7.9ms)
+
+
+Started GET "/login" for 127.0.0.1 at Wed Jan 23 18:14:22 +0100 2013
+Processing by AccountController#login as HTML
+  [1m[36m (0.4ms)[0m  [1mSELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` [0m
+  [1m[35mAnonymousUser Load (0.4ms)[0m  SELECT `users`.* FROM `users` WHERE `users`.`type` IN ('AnonymousUser') LIMIT 1
+  Current user: anonymous
+  [1m[36mSetting Load (0.8ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'openid' LIMIT 1[0m
+  [1m[35mSetting Load (0.5ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'autologin' LIMIT 1
+  [1m[36mSetting Load (0.5ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'lost_password' LIMIT 1[0m
+  Rendered account/login.html.erb within layouts/base (10.7ms)
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_update_menu.html.erb (0.1ms)
+Completed 200 OK in 44ms (Views: 37.2ms | ActiveRecord: 2.5ms)
+
+
+Started POST "/login" for 127.0.0.1 at Wed Jan 23 18:14:36 +0100 2013
+Processing by AccountController#login as HTML
+  Parameters: {"back_url"=>"http://localhost:3000/", "utf8"=>"✓", "username"=>"admin", "login"=>"Login »", "authenticity_token"=>"6lp7abd0GWbfEji/p8x2IG+1G8WBzKvQNyW3p4ZokTk=", "password"=>"[FILTERED]"}
+  [1m[35m (0.3ms)[0m  SELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` 
+  [1m[36mAnonymousUser Load (0.4ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('AnonymousUser') LIMIT 1[0m
+  Current user: anonymous
+  [1m[35mUser Load (0.8ms)[0m  SELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`login` = 'admin'
+  [1m[36mSQL (0.4ms)[0m  [1mBEGIN[0m
+  [1m[35m (14.3ms)[0m  UPDATE `users` SET `last_login_on` = '2013-01-23 18:14:36', `updated_on` = '2013-01-23 18:14:36' WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`id` = 1213
+  [1m[36mCustomField Load (0.7ms)[0m  [1mSELECT `custom_fields`.* FROM `custom_fields` WHERE (type = 'UserCustomField') ORDER BY custom_fields.position ASC[0m
+  [1m[35mSQL (1.3ms)[0m  SELECT `custom_values`.`id` AS t0_r0, `custom_values`.`customized_type` AS t0_r1, `custom_values`.`customized_id` AS t0_r2, `custom_values`.`custom_field_id` AS t0_r3, `custom_values`.`value` AS t0_r4, `custom_fields`.`id` AS t1_r0, `custom_fields`.`type` AS t1_r1, `custom_fields`.`name` AS t1_r2, `custom_fields`.`field_format` AS t1_r3, `custom_fields`.`possible_values` AS t1_r4, `custom_fields`.`regexp` AS t1_r5, `custom_fields`.`min_length` AS t1_r6, `custom_fields`.`max_length` AS t1_r7, `custom_fields`.`is_required` AS t1_r8, `custom_fields`.`is_for_all` AS t1_r9, `custom_fields`.`is_filter` AS t1_r10, `custom_fields`.`position` AS t1_r11, `custom_fields`.`searchable` AS t1_r12, `custom_fields`.`default_value` AS t1_r13, `custom_fields`.`editable` AS t1_r14, `custom_fields`.`visible` AS t1_r15, `custom_fields`.`multiple` AS t1_r16 FROM `custom_values` LEFT OUTER JOIN `custom_fields` ON `custom_fields`.`id` = `custom_values`.`custom_field_id` WHERE `custom_values`.`customized_id` = 1213 AND `custom_values`.`customized_type` = 'Principal' ORDER BY custom_fields.position
+  [1m[36m (49.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mGroup Load (0.7ms)[0m  SELECT `users`.* FROM `users` INNER JOIN `groups_users` ON `users`.`id` = `groups_users`.`group_id` WHERE `users`.`type` IN ('Group') AND `groups_users`.`user_id` = 1213
+Successful authentication for 'admin' from 127.0.0.1 at Wed Jan 23 17:14:36 UTC 2013
+Redirected to http://localhost:3000/
+Completed 302 Found in 321ms (ActiveRecord: 73.4ms)
+
+
+Started GET "/" for 127.0.0.1 at Wed Jan 23 18:14:36 +0100 2013
+Processing by WelcomeController#index as HTML
+  [1m[36mSetting Load (0.7ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'session_lifetime' LIMIT 1[0m
+  [1m[35mSetting Load (0.7ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'session_timeout' LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mSELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` [0m
+  [1m[35mUser Load (1.4ms)[0m  SELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = ? LIMIT 1  [["id", 1213]]
+  Current user: admin (id=1213)
+  [1m[36mSQL (0.9ms)[0m  [1mSELECT `news`.`id` AS t0_r0, `news`.`project_id` AS t0_r1, `news`.`title` AS t0_r2, `news`.`summary` AS t0_r3, `news`.`description` AS t0_r4, `news`.`author_id` AS t0_r5, `news`.`created_on` AS t0_r6, `news`.`comments_count` AS t0_r7, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `users`.`id` AS t2_r0, `users`.`login` AS t2_r1, `users`.`hashed_password` AS t2_r2, `users`.`firstname` AS t2_r3, `users`.`lastname` AS t2_r4, `users`.`mail` AS t2_r5, `users`.`admin` AS t2_r6, `users`.`status` AS t2_r7, `users`.`last_login_on` AS t2_r8, `users`.`language` AS t2_r9, `users`.`auth_source_id` AS t2_r10, `users`.`created_on` AS t2_r11, `users`.`updated_on` AS t2_r12, `users`.`type` AS t2_r13, `users`.`identity_url` AS t2_r14, `users`.`mail_notification` AS t2_r15, `users`.`salt` AS t2_r16 FROM `news` LEFT OUTER JOIN `projects` ON `projects`.`id` = `news`.`project_id` LEFT OUTER JOIN `users` ON `users`.`id` = `news`.`author_id` AND `users`.`type` IN ('User', 'AnonymousUser') WHERE (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='news')) ORDER BY news.created_on DESC LIMIT 5[0m
+  [1m[35mProject Load (0.7ms)[0m  SELECT `projects`.* FROM `projects` WHERE (projects.status <> 9) ORDER BY created_on DESC LIMIT 5
+  [1m[36mUserPreference Load (0.6ms)[0m  [1mSELECT `user_preferences`.* FROM `user_preferences` WHERE `user_preferences`.`user_id` = 1213 LIMIT 1[0m
+  [1m[35mToken Load (0.6ms)[0m  SELECT `tokens`.* FROM `tokens` WHERE `tokens`.`user_id` = 1213 AND (action='feeds') LIMIT 1
+  Rendered welcome/index.html.erb within layouts/base (34.6ms)
+  [1m[36mSQL (82.9ms)[0m  [1mSELECT `members`.`id` AS t0_r0, `members`.`user_id` AS t0_r1, `members`.`project_id` AS t0_r2, `members`.`created_on` AS t0_r3, `members`.`mail_notification` AS t0_r4, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `roles`.`id` AS t2_r0, `roles`.`name` AS t2_r1, `roles`.`position` AS t2_r2, `roles`.`assignable` AS t2_r3, `roles`.`builtin` AS t2_r4, `roles`.`permissions` AS t2_r5, `roles`.`issues_visibility` AS t2_r6 FROM `members` LEFT OUTER JOIN `projects` ON `projects`.`id` = `members`.`project_id` LEFT OUTER JOIN `member_roles` ON `member_roles`.`member_id` = `members`.`id` LEFT OUTER JOIN `roles` ON `roles`.`id` = `member_roles`.`role_id` WHERE `members`.`user_id` = 1213 AND (projects.status<>9) ORDER BY projects.name[0m
+  [1m[35mTimeTracker Load (0.5ms)[0m  SELECT `time_trackers`.* FROM `time_trackers` WHERE `time_trackers`.`user_id` = 1213 LIMIT 1
+  [1m[36mSetting Load (0.4ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'plugin_redmine_time_tracker' LIMIT 1[0m
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_embed_menu.html.erb (29.2ms)
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_update_menu.html.erb (31.5ms)
+Completed 200 OK in 258ms (Views: 149.1ms | ActiveRecord: 93.0ms)
+
+
+Started GET "/projects" for 127.0.0.1 at Wed Jan 23 18:14:40 +0100 2013
+Processing by ProjectsController#index as HTML
+  [1m[35m (0.3ms)[0m  SELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` 
+  [1m[36mUser Load (0.3ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = ? LIMIT 1[0m  [["id", 1213]]
+  Current user: admin (id=1213)
+  [1m[35mProject Load (1.1ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`status` = 1 AND (projects.status <> 9) ORDER BY lft
+  [1m[36mToken Load (0.3ms)[0m  [1mSELECT `tokens`.* FROM `tokens` WHERE `tokens`.`user_id` = 1213 AND (action='feeds') LIMIT 1[0m
+  [1m[35mSQL (0.7ms)[0m  SELECT `members`.`id` AS t0_r0, `members`.`user_id` AS t0_r1, `members`.`project_id` AS t0_r2, `members`.`created_on` AS t0_r3, `members`.`mail_notification` AS t0_r4, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `roles`.`id` AS t2_r0, `roles`.`name` AS t2_r1, `roles`.`position` AS t2_r2, `roles`.`assignable` AS t2_r3, `roles`.`builtin` AS t2_r4, `roles`.`permissions` AS t2_r5, `roles`.`issues_visibility` AS t2_r6 FROM `members` LEFT OUTER JOIN `projects` ON `projects`.`id` = `members`.`project_id` LEFT OUTER JOIN `member_roles` ON `member_roles`.`member_id` = `members`.`id` LEFT OUTER JOIN `roles` ON `roles`.`id` = `member_roles`.`role_id` WHERE `members`.`user_id` = 1213 AND (projects.status<>9) ORDER BY projects.name
+  [1m[36mRole Load (0.7ms)[0m  [1mSELECT `roles`.* FROM `roles` WHERE `roles`.`builtin` = 1 LIMIT 1[0m
+  Rendered projects/index.html.erb within layouts/base (80.5ms)
+  [1m[35mUserPreference Load (0.4ms)[0m  SELECT `user_preferences`.* FROM `user_preferences` WHERE `user_preferences`.`user_id` = 1213 LIMIT 1
+  [1m[36mTimeTracker Load (10.3ms)[0m  [1mSELECT `time_trackers`.* FROM `time_trackers` WHERE `time_trackers`.`user_id` = 1213 LIMIT 1[0m
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_embed_menu.html.erb (14.5ms)
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_update_menu.html.erb (94.6ms)
+Completed 200 OK in 232ms (Views: 206.5ms | ActiveRecord: 14.0ms)
+
+
+Started GET "/projects/test1?jump=issues" for 127.0.0.1 at Wed Jan 23 18:14:43 +0100 2013
+Processing by ProjectsController#show as HTML
+  Parameters: {"jump"=>"issues", "id"=>"test1"}
+  [1m[35m (0.6ms)[0m  SELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` 
+  [1m[36mUser Load (0.5ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = ? LIMIT 1[0m  [["id", 1213]]
+  Current user: admin (id=1213)
+  [1m[35mProject Load (0.7ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`identifier` = 'test1' LIMIT 1
+  [1m[36mEnabledModule Load (0.6ms)[0m  [1mSELECT name FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 94[0m
+Redirected to http://localhost:3000/projects/test1/issues
+Completed 302 Found in 29ms (ActiveRecord: 3.9ms)
+
+
+Started GET "/projects/test1/issues" for 127.0.0.1 at Wed Jan 23 18:14:43 +0100 2013
+Processing by IssuesController#index as HTML
+  Parameters: {"project_id"=>"test1"}
+  [1m[35m (0.3ms)[0m  SELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` 
+  [1m[36mUser Load (0.4ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = ? LIMIT 1[0m  [["id", 1213]]
+  Current user: admin (id=1213)
+  [1m[35mProject Load (0.4ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`identifier` = 'test1' LIMIT 1
+  [1m[36mEnabledModule Load (0.3ms)[0m  [1mSELECT name FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 94[0m
+  [1m[35mIssueStatus Load (0.5ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` ORDER BY issue_statuses.position ASC
+  [1m[36mTracker Load (0.8ms)[0m  [1mSELECT DISTINCT trackers.* FROM `trackers` INNER JOIN `projects_trackers` ON `projects_trackers`.`tracker_id` = `trackers`.`id` INNER JOIN `projects` ON `projects`.`id` = `projects_trackers`.`project_id` WHERE (projects.lft >= 74 AND projects.rgt <= 75 AND projects.status <> 9) ORDER BY trackers.position ASC[0m
+  [1m[35mIssuePriority Load (0.6ms)[0m  SELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') ORDER BY enumerations.position ASC
+  [1m[36mPrincipal Load (1.0ms)[0m  [1mSELECT `users`.* FROM `users` INNER JOIN `members` ON `users`.`id` = `members`.`user_id` WHERE `members`.`project_id` = 94 AND (users.type='Group' OR (users.type='User' AND users.status=1))[0m
+  [1m[35mSetting Load (0.6ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'user_format' LIMIT 1
+  [1m[36mSetting Load (0.6ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'issue_group_assignment' LIMIT 1[0m
+  [1m[35mGroup Load (0.6ms)[0m  SELECT `users`.* FROM `users` WHERE `users`.`type` IN ('Group')
+  [1m[36mRole Load (0.6ms)[0m  [1mSELECT `roles`.* FROM `roles` WHERE `roles`.`builtin` = 0 ORDER BY roles.position ASC[0m
+  [1m[35mIssueCategory Load (0.6ms)[0m  SELECT `issue_categories`.* FROM `issue_categories` WHERE `issue_categories`.`project_id` = 94 ORDER BY issue_categories.name
+  [1m[36mProject Load (0.7ms)[0m  [1mSELECT `projects`.* FROM `projects` WHERE `projects`.`parent_id` IS NULL AND (`projects`.`lft` <= 74 AND `projects`.`rgt` >= 75) ORDER BY `projects`.`lft` LIMIT 1[0m
+  [1m[35mSQL (0.8ms)[0m  SELECT `versions`.`id` AS t0_r0, `versions`.`project_id` AS t0_r1, `versions`.`name` AS t0_r2, `versions`.`description` AS t0_r3, `versions`.`effective_date` AS t0_r4, `versions`.`created_on` AS t0_r5, `versions`.`updated_on` AS t0_r6, `versions`.`wiki_page_title` AS t0_r7, `versions`.`status` AS t0_r8, `versions`.`sharing` AS t0_r9, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11 FROM `versions` LEFT OUTER JOIN `projects` ON `projects`.`id` = `versions`.`project_id` WHERE (projects.id = 94 OR (projects.status <> 9 AND ( versions.sharing = 'system' OR (projects.lft >= 73 AND projects.rgt <= 78 AND versions.sharing = 'tree') OR (projects.lft < 74 AND projects.rgt > 75 AND versions.sharing IN ('hierarchy', 'descendants')) OR (projects.lft > 74 AND projects.rgt < 75 AND versions.sharing = 'hierarchy'))))
+  [1m[36mIssueCustomField Load (0.7ms)[0m  [1mSELECT `custom_fields`.* FROM `custom_fields` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND `custom_fields`.`is_for_all` = 1 ORDER BY position[0m
+  [1m[35mIssueCustomField Load (1.5ms)[0m  SELECT `custom_fields`.* FROM `custom_fields` INNER JOIN `custom_fields_projects` ON `custom_fields`.`id` = `custom_fields_projects`.`custom_field_id` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND `custom_fields_projects`.`project_id` = 94 ORDER BY custom_fields.position
+  [1m[36mCustomField Load (0.6ms)[0m  [1mSELECT `custom_fields`.* FROM `custom_fields` WHERE `custom_fields`.`is_filter` = 1[0m
+  [1m[35mSetting Load (0.6ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'per_page_options' LIMIT 1
+  [1m[36m (0.7ms)[0m  [1mSELECT COUNT(*) FROM `projects` WHERE `projects`.`status` = 1 AND (`projects`.`lft` >= 74 AND `projects`.`rgt` <= 75) AND (`projects`.id != 94)[0m
+  [1m[35m (0.9ms)[0m  SELECT COUNT(DISTINCT `issues`.`id`) FROM `issues` LEFT OUTER JOIN `projects` ON `projects`.`id` = `issues`.`project_id` LEFT OUTER JOIN `issue_statuses` ON `issue_statuses`.`id` = `issues`.`status_id` WHERE (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking')) AND ((issues.status_id IN (SELECT id FROM issue_statuses WHERE is_closed=0)) AND projects.id = 94)
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT COUNT(*) FROM `projects` WHERE `projects`.`status` = 1 AND (`projects`.`lft` >= 74 AND `projects`.`rgt` <= 75) AND (`projects`.id != 94)[0m
+  [1m[35mSQL (1.7ms)[0m  SELECT `issues`.`id` AS t0_r0, `issues`.`tracker_id` AS t0_r1, `issues`.`project_id` AS t0_r2, `issues`.`subject` AS t0_r3, `issues`.`description` AS t0_r4, `issues`.`due_date` AS t0_r5, `issues`.`category_id` AS t0_r6, `issues`.`status_id` AS t0_r7, `issues`.`assigned_to_id` AS t0_r8, `issues`.`priority_id` AS t0_r9, `issues`.`fixed_version_id` AS t0_r10, `issues`.`author_id` AS t0_r11, `issues`.`lock_version` AS t0_r12, `issues`.`created_on` AS t0_r13, `issues`.`updated_on` AS t0_r14, `issues`.`start_date` AS t0_r15, `issues`.`done_ratio` AS t0_r16, `issues`.`estimated_hours` AS t0_r17, `issues`.`parent_id` AS t0_r18, `issues`.`root_id` AS t0_r19, `issues`.`lft` AS t0_r20, `issues`.`rgt` AS t0_r21, `issues`.`is_private` AS t0_r22, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `issue_statuses`.`id` AS t2_r0, `issue_statuses`.`name` AS t2_r1, `issue_statuses`.`is_closed` AS t2_r2, `issue_statuses`.`is_default` AS t2_r3, `issue_statuses`.`position` AS t2_r4, `issue_statuses`.`default_done_ratio` AS t2_r5, `users`.`id` AS t3_r0, `users`.`login` AS t3_r1, `users`.`hashed_password` AS t3_r2, `users`.`firstname` AS t3_r3, `users`.`lastname` AS t3_r4, `users`.`mail` AS t3_r5, `users`.`admin` AS t3_r6, `users`.`status` AS t3_r7, `users`.`last_login_on` AS t3_r8, `users`.`language` AS t3_r9, `users`.`auth_source_id` AS t3_r10, `users`.`created_on` AS t3_r11, `users`.`updated_on` AS t3_r12, `users`.`type` AS t3_r13, `users`.`identity_url` AS t3_r14, `users`.`mail_notification` AS t3_r15, `users`.`salt` AS t3_r16, `trackers`.`id` AS t4_r0, `trackers`.`name` AS t4_r1, `trackers`.`is_in_chlog` AS t4_r2, `trackers`.`position` AS t4_r3, `trackers`.`is_in_roadmap` AS t4_r4, `trackers`.`fields_bits` AS t4_r5, `enumerations`.`id` AS t5_r0, `enumerations`.`name` AS t5_r1, `enumerations`.`position` AS t5_r2, `enumerations`.`is_default` AS t5_r3, `enumerations`.`type` AS t5_r4, `enumerations`.`active` AS t5_r5, `enumerations`.`project_id` AS t5_r6, `enumerations`.`parent_id` AS t5_r7, `enumerations`.`position_name` AS t5_r8, `issue_categories`.`id` AS t6_r0, `issue_categories`.`project_id` AS t6_r1, `issue_categories`.`name` AS t6_r2, `issue_categories`.`assigned_to_id` AS t6_r3, `versions`.`id` AS t7_r0, `versions`.`project_id` AS t7_r1, `versions`.`name` AS t7_r2, `versions`.`description` AS t7_r3, `versions`.`effective_date` AS t7_r4, `versions`.`created_on` AS t7_r5, `versions`.`updated_on` AS t7_r6, `versions`.`wiki_page_title` AS t7_r7, `versions`.`status` AS t7_r8, `versions`.`sharing` AS t7_r9 FROM `issues` LEFT OUTER JOIN `projects` ON `projects`.`id` = `issues`.`project_id` LEFT OUTER JOIN `issue_statuses` ON `issue_statuses`.`id` = `issues`.`status_id` LEFT OUTER JOIN `users` ON `users`.`id` = `issues`.`assigned_to_id` LEFT OUTER JOIN `trackers` ON `trackers`.`id` = `issues`.`tracker_id` LEFT OUTER JOIN `enumerations` ON `enumerations`.`id` = `issues`.`priority_id` AND `enumerations`.`type` IN ('IssuePriority') LEFT OUTER JOIN `issue_categories` ON `issue_categories`.`id` = `issues`.`category_id` LEFT OUTER JOIN `versions` ON `versions`.`id` = `issues`.`fixed_version_id` WHERE (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking')) AND ((issues.status_id IN (SELECT id FROM issue_statuses WHERE is_closed=0)) AND projects.id = 94) ORDER BY issues.id DESC LIMIT 25 OFFSET 0
+  [1m[36mProject Load (0.7ms)[0m  [1mSELECT `projects`.* FROM `projects` WHERE (projects.status <> 9)[0m
+  [1m[35mSetting Load (0.6ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'start_of_week' LIMIT 1
+  Rendered queries/_filters.html.erb (44.2ms)
+  [1m[36mSetting Load (0.6ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'issue_list_default_columns' LIMIT 1[0m
+  Rendered queries/_columns.html.erb (9.8ms)
+  [1m[35m (0.6ms)[0m  SELECT `issues`.id FROM `issues` INNER JOIN `already_reads` ON `issues`.`id` = `already_reads`.`issue_id` WHERE `already_reads`.`user_id` = 1213
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issues`.id FROM `issues` INNER JOIN `already_reads` ON `issues`.`id` = `already_reads`.`issue_id` WHERE `already_reads`.`user_id` = 1213[0m
+  [1m[35mTimeTracker Load (0.3ms)[0m  SELECT `time_trackers`.* FROM `time_trackers` WHERE `time_trackers`.`user_id` = 1213 LIMIT 1
+  [1m[36mUserPreference Load (0.3ms)[0m  [1mSELECT `user_preferences`.* FROM `user_preferences` WHERE `user_preferences`.`user_id` = 1213 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issues`.id FROM `issues` INNER JOIN `already_reads` ON `issues`.`id` = `already_reads`.`issue_id` WHERE `already_reads`.`user_id` = 1213
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issues`.id FROM `issues` INNER JOIN `already_reads` ON `issues`.`id` = `already_reads`.`issue_id` WHERE `already_reads`.`user_id` = 1213[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issues`.id FROM `issues` INNER JOIN `already_reads` ON `issues`.`id` = `already_reads`.`issue_id` WHERE `already_reads`.`user_id` = 1213
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issues`.id FROM `issues` INNER JOIN `already_reads` ON `issues`.`id` = `already_reads`.`issue_id` WHERE `already_reads`.`user_id` = 1213[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issues`.id FROM `issues` INNER JOIN `already_reads` ON `issues`.`id` = `already_reads`.`issue_id` WHERE `already_reads`.`user_id` = 1213
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issues`.id FROM `issues` INNER JOIN `already_reads` ON `issues`.`id` = `already_reads`.`issue_id` WHERE `already_reads`.`user_id` = 1213[0m
+  Rendered issues/_list.html.erb (60.6ms)
+  [1m[35mToken Load (0.3ms)[0m  SELECT `tokens`.* FROM `tokens` WHERE `tokens`.`user_id` = 1213 AND (action='feeds') LIMIT 1
+  [1m[36mSQL (0.9ms)[0m  [1mSELECT `queries`.`id` AS t0_r0, `queries`.`project_id` AS t0_r1, `queries`.`name` AS t0_r2, `queries`.`filters` AS t0_r3, `queries`.`user_id` AS t0_r4, `queries`.`is_public` AS t0_r5, `queries`.`column_names` AS t0_r6, `queries`.`sort_criteria` AS t0_r7, `queries`.`group_by` AS t0_r8, `queries`.`type` AS t0_r9, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11 FROM `queries` LEFT OUTER JOIN `projects` ON `projects`.`id` = `queries`.`project_id` WHERE `queries`.`type` IN ('IssueQuery') AND ((queries.project_id IS NULL OR (projects.status <> 9 AND projects.id IN (SELECT em.project_id FROM enabled_modules em WHERE em.name='issue_tracking'))) AND (queries.is_public = 1 OR queries.user_id = 1213)) AND (project_id IS NULL OR project_id = 94) ORDER BY queries.name ASC[0m
+  Rendered issues/_sidebar.html.erb (16.4ms)
+  Rendered issues/index.html.erb within layouts/base (163.8ms)
+  [1m[35mSQL (85.5ms)[0m  SELECT `members`.`id` AS t0_r0, `members`.`user_id` AS t0_r1, `members`.`project_id` AS t0_r2, `members`.`created_on` AS t0_r3, `members`.`mail_notification` AS t0_r4, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `roles`.`id` AS t2_r0, `roles`.`name` AS t2_r1, `roles`.`position` AS t2_r2, `roles`.`assignable` AS t2_r3, `roles`.`builtin` AS t2_r4, `roles`.`permissions` AS t2_r5, `roles`.`issues_visibility` AS t2_r6 FROM `members` LEFT OUTER JOIN `projects` ON `projects`.`id` = `members`.`project_id` LEFT OUTER JOIN `member_roles` ON `member_roles`.`member_id` = `members`.`id` LEFT OUTER JOIN `roles` ON `roles`.`id` = `member_roles`.`role_id` WHERE `members`.`user_id` = 1213 AND (projects.status<>9) ORDER BY projects.name
+  [1m[36mProject Load (0.9ms)[0m  [1mSELECT `projects`.* FROM `projects` WHERE (`projects`.`lft` <= 74 AND `projects`.`rgt` >= 75) AND (`projects`.id != 94) AND (projects.status <> 9) ORDER BY `projects`.`lft`[0m
+  [1m[35mWiki Load (0.5ms)[0m  SELECT `wikis`.* FROM `wikis` WHERE `wikis`.`project_id` = 94 LIMIT 1
+  [1m[36m (0.3ms)[0m  [1mSELECT COUNT(*) FROM `boards` WHERE `boards`.`project_id` = 94[0m
+  [1m[35mRepository Load (0.7ms)[0m  SELECT `repositories`.* FROM `repositories` WHERE `repositories`.`project_id` = 94 AND (is_default = 1) LIMIT 1
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_embed_menu.html.erb (0.8ms)
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_update_menu.html.erb (2.8ms)
+Completed 200 OK in 751ms (Views: 322.2ms | ActiveRecord: 132.2ms)
+
+
+Started GET "/projects/test1/issues/new" for 127.0.0.1 at Wed Jan 23 18:14:46 +0100 2013
+Processing by IssuesController#new as HTML
+  Parameters: {"project_id"=>"test1"}
+  [1m[36m (0.3ms)[0m  [1mSELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` [0m
+  [1m[35mUser Load (0.4ms)[0m  SELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = ? LIMIT 1  [["id", 1213]]
+  Current user: admin (id=1213)
+  [1m[36mProject Load (0.3ms)[0m  [1mSELECT `projects`.* FROM `projects` WHERE `projects`.`identifier` = 'test1' LIMIT 1[0m
+  [1m[35mEnabledModule Load (0.2ms)[0m  SELECT name FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 94
+  [1m[36mIssueStatus Load (0.5ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1[0m
+  [1m[35mIssueStatus Load (0.8ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` = 0 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1[0m
+  [1m[35mIssuePriority Load (0.9ms)[0m  SELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') AND `enumerations`.`id` = 0 ORDER BY enumerations.position ASC LIMIT 1
+  [1m[36mIssuePriority Load (1.5ms)[0m  [1mSELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') AND `enumerations`.`is_default` = 1 ORDER BY enumerations.position ASC LIMIT 1[0m
+  [1m[35mProject Load (0.6ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`id` = 0 LIMIT 1
+  [1m[36mProject Load (0.6ms)[0m  [1mSELECT `projects`.* FROM `projects` WHERE `projects`.`id` = 94 LIMIT 1[0m
+  [1m[35mUser Load (0.6ms)[0m  SELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`id` = 0 LIMIT 1
+  [1m[36mTracker Load (0.5ms)[0m  [1mSELECT `trackers`.* FROM `trackers` WHERE `trackers`.`id` = 0 LIMIT 1[0m
+  [1m[35mTracker Load (0.8ms)[0m  SELECT `trackers`.* FROM `trackers` INNER JOIN `projects_trackers` ON `trackers`.`id` = `projects_trackers`.`tracker_id` WHERE `projects_trackers`.`project_id` = 94 ORDER BY trackers.position LIMIT 1
+  [1m[36mSetting Load (0.5ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'default_issue_start_date_to_creation_date' LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mRole Load (0.5ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mWorkflowTransition Load (0.8ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 1 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mIssueStatus Load (0.9ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mUser Load (0.9ms)[0m  [1mSELECT `users`.* FROM `users` INNER JOIN `members` ON `users`.`id` = `members`.`user_id` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `members`.`project_id` = 94 AND (users.type='User' AND users.status=1)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 1 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT name FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 94
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mWorkflowPermission Load (0.8ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`old_status_id` = 1 AND `workflows`.`tracker_id` = 1 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5)
+  [1m[36mTracker Load (0.7ms)[0m  [1mSELECT `trackers`.* FROM `trackers` INNER JOIN `projects_trackers` ON `trackers`.`id` = `projects_trackers`.`tracker_id` WHERE `projects_trackers`.`project_id` = 94 ORDER BY trackers.position[0m
+  [1m[35mSetting Load (0.7ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'text_formatting' LIMIT 1
+  [1m[36mIssuePriority Load (0.7ms)[0m  [1mSELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') AND `enumerations`.`active` = 1 ORDER BY enumerations.position ASC[0m
+  [1m[35mSQL (1.4ms)[0m  SELECT `members`.`id` AS t0_r0, `members`.`user_id` AS t0_r1, `members`.`project_id` AS t0_r2, `members`.`created_on` AS t0_r3, `members`.`mail_notification` AS t0_r4, `users`.`id` AS t1_r0, `users`.`login` AS t1_r1, `users`.`hashed_password` AS t1_r2, `users`.`firstname` AS t1_r3, `users`.`lastname` AS t1_r4, `users`.`mail` AS t1_r5, `users`.`admin` AS t1_r6, `users`.`status` AS t1_r7, `users`.`last_login_on` AS t1_r8, `users`.`language` AS t1_r9, `users`.`auth_source_id` AS t1_r10, `users`.`created_on` AS t1_r11, `users`.`updated_on` AS t1_r12, `users`.`type` AS t1_r13, `users`.`identity_url` AS t1_r14, `users`.`mail_notification` AS t1_r15, `users`.`salt` AS t1_r16, `roles`.`id` AS t2_r0, `roles`.`name` AS t2_r1, `roles`.`position` AS t2_r2, `roles`.`assignable` AS t2_r3, `roles`.`builtin` AS t2_r4, `roles`.`permissions` AS t2_r5, `roles`.`issues_visibility` AS t2_r6 FROM `members` LEFT OUTER JOIN `users` ON `users`.`id` = `members`.`user_id` LEFT OUTER JOIN `member_roles` ON `member_roles`.`member_id` = `members`.`id` LEFT OUTER JOIN `roles` ON `roles`.`id` = `member_roles`.`role_id` WHERE `members`.`project_id` = 94 AND (users.type='User' AND users.status=1)
+  [1m[36m (0.6ms)[0m  [1mSELECT COUNT(*) FROM `issue_categories` WHERE `issue_categories`.`project_id` = 94[0m
+  [1m[35mProject Load (0.3ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`parent_id` IS NULL AND (`projects`.`lft` <= 74 AND `projects`.`rgt` >= 75) ORDER BY `projects`.`lft` LIMIT 1
+  [1m[36mSQL (0.8ms)[0m  [1mSELECT `versions`.`id` AS t0_r0, `versions`.`project_id` AS t0_r1, `versions`.`name` AS t0_r2, `versions`.`description` AS t0_r3, `versions`.`effective_date` AS t0_r4, `versions`.`created_on` AS t0_r5, `versions`.`updated_on` AS t0_r6, `versions`.`wiki_page_title` AS t0_r7, `versions`.`status` AS t0_r8, `versions`.`sharing` AS t0_r9, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11 FROM `versions` LEFT OUTER JOIN `projects` ON `projects`.`id` = `versions`.`project_id` WHERE `versions`.`status` = 'open' AND (projects.id = 94 OR (projects.status <> 9 AND ( versions.sharing = 'system' OR (projects.lft >= 73 AND projects.rgt <= 78 AND versions.sharing = 'tree') OR (projects.lft < 74 AND projects.rgt > 75 AND versions.sharing IN ('hierarchy', 'descendants')) OR (projects.lft > 74 AND projects.rgt < 75 AND versions.sharing = 'hierarchy'))))[0m
+  [1m[35mSetting Load (0.7ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'issue_done_ratio' LIMIT 1
+  [1m[36mIssueCustomField Load (0.4ms)[0m  [1mSELECT `custom_fields`.* FROM `custom_fields` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND `custom_fields`.`is_for_all` = 1 ORDER BY position[0m
+  [1m[35mIssueCustomField Load (0.4ms)[0m  SELECT `custom_fields`.* FROM `custom_fields` INNER JOIN `custom_fields_projects` ON `custom_fields`.`id` = `custom_fields_projects`.`custom_field_id` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND `custom_fields_projects`.`project_id` = 94 ORDER BY custom_fields.position
+  [1m[36mIssueCustomField Load (0.6ms)[0m  [1mSELECT `custom_fields`.* FROM `custom_fields` INNER JOIN `custom_fields_trackers` ON `custom_fields`.`id` = `custom_fields_trackers`.`custom_field_id` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND `custom_fields_trackers`.`tracker_id` = 1[0m
+  Rendered issues/_form_custom_fields.html.erb (13.9ms)
+  Rendered issues/_attributes.html.erb (66.6ms)
+  [1m[35mTimeTracker Load (0.3ms)[0m  SELECT `time_trackers`.* FROM `time_trackers` WHERE `time_trackers`.`user_id` = 1213 LIMIT 1
+  [1m[36mSetting Load (0.6ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'host_name' LIMIT 1[0m
+  [1m[35mSetting Load (0.5ms)[0m  SELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'protocol' LIMIT 1
+  Rendered issues/_form.html.erb (205.7ms)
+  [1m[36mSetting Load (0.6ms)[0m  [1mSELECT `settings`.* FROM `settings` WHERE `settings`.`name` = 'attachment_max_size' LIMIT 1[0m
+  Rendered attachments/_form.html.erb (7.4ms)
+  Rendered issues/new.html.erb within layouts/base (226.6ms)
+  [1m[35mUserPreference Load (0.3ms)[0m  SELECT `user_preferences`.* FROM `user_preferences` WHERE `user_preferences`.`user_id` = 1213 LIMIT 1
+  [1m[36mSQL (0.7ms)[0m  [1mSELECT `members`.`id` AS t0_r0, `members`.`user_id` AS t0_r1, `members`.`project_id` AS t0_r2, `members`.`created_on` AS t0_r3, `members`.`mail_notification` AS t0_r4, `projects`.`id` AS t1_r0, `projects`.`name` AS t1_r1, `projects`.`description` AS t1_r2, `projects`.`homepage` AS t1_r3, `projects`.`is_public` AS t1_r4, `projects`.`parent_id` AS t1_r5, `projects`.`created_on` AS t1_r6, `projects`.`updated_on` AS t1_r7, `projects`.`identifier` AS t1_r8, `projects`.`status` AS t1_r9, `projects`.`lft` AS t1_r10, `projects`.`rgt` AS t1_r11, `roles`.`id` AS t2_r0, `roles`.`name` AS t2_r1, `roles`.`position` AS t2_r2, `roles`.`assignable` AS t2_r3, `roles`.`builtin` AS t2_r4, `roles`.`permissions` AS t2_r5, `roles`.`issues_visibility` AS t2_r6 FROM `members` LEFT OUTER JOIN `projects` ON `projects`.`id` = `members`.`project_id` LEFT OUTER JOIN `member_roles` ON `member_roles`.`member_id` = `members`.`id` LEFT OUTER JOIN `roles` ON `roles`.`id` = `member_roles`.`role_id` WHERE `members`.`user_id` = 1213 AND (projects.status<>9) ORDER BY projects.name[0m
+  [1m[35mProject Load (0.2ms)[0m  SELECT `projects`.* FROM `projects` WHERE (`projects`.`lft` <= 74 AND `projects`.`rgt` >= 75) AND (`projects`.id != 94) AND (projects.status <> 9) ORDER BY `projects`.`lft`
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `projects`.* FROM `projects` WHERE `projects`.`parent_id` IS NULL AND (`projects`.`lft` <= 74 AND `projects`.`rgt` >= 75) ORDER BY `projects`.`lft` LIMIT 1[0m
+  [1m[35m (0.8ms)[0m  SELECT COUNT(DISTINCT `versions`.`id`) FROM `versions` LEFT OUTER JOIN `projects` ON `projects`.`id` = `versions`.`project_id` WHERE (projects.id = 94 OR (projects.status <> 9 AND ( versions.sharing = 'system' OR (projects.lft >= 73 AND projects.rgt <= 78 AND versions.sharing = 'tree') OR (projects.lft < 74 AND projects.rgt > 75 AND versions.sharing IN ('hierarchy', 'descendants')) OR (projects.lft > 74 AND projects.rgt < 75 AND versions.sharing = 'hierarchy'))))
+  [1m[36mWiki Load (0.2ms)[0m  [1mSELECT `wikis`.* FROM `wikis` WHERE `wikis`.`project_id` = 94 LIMIT 1[0m
+  [1m[35m (0.4ms)[0m  SELECT COUNT(*) FROM `boards` WHERE `boards`.`project_id` = 94
+  [1m[36mRepository Load (0.4ms)[0m  [1mSELECT `repositories`.* FROM `repositories` WHERE `repositories`.`project_id` = 94 AND (is_default = 1) LIMIT 1[0m
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_embed_menu.html.erb (1.2ms)
+  Rendered plugins/redmine_time_tracker/app/views/time_trackers/_update_menu.html.erb (2.9ms)
+Completed 200 OK in 455ms (Views: 315.6ms | ActiveRecord: 28.2ms)
+
+
+Started POST "/projects/test1/issues/new.js" for 127.0.0.1 at Wed Jan 23 18:14:49 +0100 2013
+Processing by IssuesController#new as JS
+  Parameters: {"utf8"=>"✓", "project_id"=>"test1", "issue"=>{"subject"=>"", "parent_issue_id"=>"", "due_date"=>"", "start_date"=>"2013-01-23", "priority_id"=>"2", "done_ratio"=>"0", "is_private"=>"0", "tracker_id"=>"4", "description"=>"", "status_id"=>"1", "estimated_hours"=>"", "assigned_to_id"=>""}, "authenticity_token"=>"2wslJzo8RfG+8y/nPXuw/TksOJo/i+ZApgqrKUSWAgU="}
+  [1m[35m (0.3ms)[0m  SELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` 
+  [1m[36mUser Load (0.4ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = ? LIMIT 1[0m  [["id", 1213]]
+  Current user: admin (id=1213)
+  [1m[35mProject Load (0.3ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`identifier` = 'test1' LIMIT 1
+  [1m[36mEnabledModule Load (0.4ms)[0m  [1mSELECT name FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 94[0m
+  [1m[35mIssueStatus Load (0.2ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mIssueStatus Load (0.4ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` = 0 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mIssuePriority Load (0.2ms)[0m  [1mSELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') AND `enumerations`.`id` = 0 ORDER BY enumerations.position ASC LIMIT 1[0m
+  [1m[35mIssuePriority Load (0.4ms)[0m  SELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') AND `enumerations`.`is_default` = 1 ORDER BY enumerations.position ASC LIMIT 1
+  [1m[36mProject Load (0.4ms)[0m  [1mSELECT `projects`.* FROM `projects` WHERE `projects`.`id` = 0 LIMIT 1[0m
+  [1m[35mProject Load (0.3ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`id` = 94 LIMIT 1
+  [1m[36mUser Load (0.3ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`id` = 0 LIMIT 1[0m
+  [1m[35mTracker Load (0.2ms)[0m  SELECT `trackers`.* FROM `trackers` WHERE `trackers`.`id` = 0 LIMIT 1
+  [1m[36mTracker Load (0.8ms)[0m  [1mSELECT `trackers`.* FROM `trackers` INNER JOIN `projects_trackers` ON `trackers`.`id` = `projects_trackers`.`tracker_id` WHERE `projects_trackers`.`project_id` = 94 AND `trackers`.`id` = ? ORDER BY trackers.position LIMIT 1[0m  [["id", "4"]]
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mRole Load (0.2ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mWorkflowTransition Load (0.9ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 4 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mIssueStatus Load (0.3ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.1ms)[0m  SELECT name FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 94
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mWorkflowPermission Load (0.7ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`old_status_id` = 1 AND `workflows`.`tracker_id` = 4 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5)
+  [1m[36mTracker Load (0.7ms)[0m  [1mSELECT `trackers`.* FROM `trackers` WHERE `trackers`.`id` = 4 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` 
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`old_status_id` = 1 AND `workflows`.`tracker_id` = 4 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 4 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 4 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` 
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`old_status_id` = 1 AND `workflows`.`tracker_id` = 4 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 4 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mUser Load (0.3ms)[0m  [1mSELECT `users`.* FROM `users` INNER JOIN `members` ON `users`.`id` = `members`.`user_id` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `members`.`project_id` = 94 AND (users.type='User' AND users.status=1)[0m
+  [1m[35mIssueStatus Load (0.5ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`old_status_id` = 1 AND `workflows`.`tracker_id` = 4 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5)
+  [1m[36mTracker Load (0.4ms)[0m  [1mSELECT `trackers`.* FROM `trackers` INNER JOIN `projects_trackers` ON `trackers`.`id` = `projects_trackers`.`tracker_id` WHERE `projects_trackers`.`project_id` = 94 ORDER BY trackers.position[0m
+  [1m[35mIssuePriority Load (0.6ms)[0m  SELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') AND `enumerations`.`active` = 1 ORDER BY enumerations.position ASC
+  [1m[36mSQL (0.5ms)[0m  [1mSELECT `members`.`id` AS t0_r0, `members`.`user_id` AS t0_r1, `members`.`project_id` AS t0_r2, `members`.`created_on` AS t0_r3, `members`.`mail_notification` AS t0_r4, `users`.`id` AS t1_r0, `users`.`login` AS t1_r1, `users`.`hashed_password` AS t1_r2, `users`.`firstname` AS t1_r3, `users`.`lastname` AS t1_r4, `users`.`mail` AS t1_r5, `users`.`admin` AS t1_r6, `users`.`status` AS t1_r7, `users`.`last_login_on` AS t1_r8, `users`.`language` AS t1_r9, `users`.`auth_source_id` AS t1_r10, `users`.`created_on` AS t1_r11, `users`.`updated_on` AS t1_r12, `users`.`type` AS t1_r13, `users`.`identity_url` AS t1_r14, `users`.`mail_notification` AS t1_r15, `users`.`salt` AS t1_r16, `roles`.`id` AS t2_r0, `roles`.`name` AS t2_r1, `roles`.`position` AS t2_r2, `roles`.`assignable` AS t2_r3, `roles`.`builtin` AS t2_r4, `roles`.`permissions` AS t2_r5, `roles`.`issues_visibility` AS t2_r6 FROM `members` LEFT OUTER JOIN `users` ON `users`.`id` = `members`.`user_id` LEFT OUTER JOIN `member_roles` ON `member_roles`.`member_id` = `members`.`id` LEFT OUTER JOIN `roles` ON `roles`.`id` = `member_roles`.`role_id` WHERE `members`.`project_id` = 94 AND (users.type='User' AND users.status=1)[0m
+  [1m[35mIssueCustomField Load (0.2ms)[0m  SELECT `custom_fields`.* FROM `custom_fields` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND `custom_fields`.`is_for_all` = 1 ORDER BY position
+  [1m[36mIssueCustomField Load (0.2ms)[0m  [1mSELECT `custom_fields`.* FROM `custom_fields` INNER JOIN `custom_fields_projects` ON `custom_fields`.`id` = `custom_fields_projects`.`custom_field_id` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND `custom_fields_projects`.`project_id` = 94 ORDER BY custom_fields.position[0m
+  [1m[35mIssueCustomField Load (0.4ms)[0m  SELECT `custom_fields`.* FROM `custom_fields` INNER JOIN `custom_fields_trackers` ON `custom_fields`.`id` = `custom_fields_trackers`.`custom_field_id` WHERE `custom_fields`.`type` IN ('IssueCustomField') AND `custom_fields_trackers`.`tracker_id` = 4
+  Rendered issues/_form_custom_fields.html.erb (10.5ms)
+  Rendered issues/_attributes.html.erb (40.5ms)
+  [1m[36mTimeTracker Load (0.2ms)[0m  [1mSELECT `time_trackers`.* FROM `time_trackers` WHERE `time_trackers`.`user_id` = 1213 LIMIT 1[0m
+  Rendered issues/_form.html.erb (71.2ms)
+  Rendered issues/_update_form.js.erb (78.4ms)
+Completed 200 OK in 205ms (Views: 79.3ms | ActiveRecord: 10.9ms)
+
+
+Started POST "/projects/test1/issues" for 127.0.0.1 at Wed Jan 23 18:15:00 +0100 2013
+Processing by IssuesController#create as HTML
+  Parameters: {"utf8"=>"✓", "project_id"=>"test1", "issue"=>{"subject"=>"test issue", "parent_issue_id"=>"", "start_date"=>"2013-01-23", "priority_id"=>"2", "is_private"=>"0", "tracker_id"=>"4", "description"=>"", "status_id"=>"1", "assigned_to_id"=>""}, "commit"=>"Create", "authenticity_token"=>"2wslJzo8RfG+8y/nPXuw/TksOJo/i+ZApgqrKUSWAgU="}
+  [1m[35m (0.3ms)[0m  SELECT MAX(`settings`.`updated_on`) AS max_id FROM `settings` 
+  [1m[36mUser Load (1.6ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`status` = 1 AND `users`.`id` = ? LIMIT 1[0m  [["id", 1213]]
+  Current user: admin (id=1213)
+  [1m[35mProject Load (0.4ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`identifier` = 'test1' LIMIT 1
+  [1m[36mEnabledModule Load (0.3ms)[0m  [1mSELECT name FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 94[0m
+  [1m[35mIssueStatus Load (0.4ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mIssueStatus Load (0.4ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` = 0 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mIssuePriority Load (0.4ms)[0m  [1mSELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') AND `enumerations`.`id` = 0 ORDER BY enumerations.position ASC LIMIT 1[0m
+  [1m[35mIssuePriority Load (0.3ms)[0m  SELECT `enumerations`.* FROM `enumerations` WHERE `enumerations`.`type` IN ('IssuePriority') AND `enumerations`.`is_default` = 1 ORDER BY enumerations.position ASC LIMIT 1
+  [1m[36mProject Load (0.3ms)[0m  [1mSELECT `projects`.* FROM `projects` WHERE `projects`.`id` = 0 LIMIT 1[0m
+  [1m[35mProject Load (0.3ms)[0m  SELECT `projects`.* FROM `projects` WHERE `projects`.`id` = 94 LIMIT 1
+  [1m[36mUser Load (0.6ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`id` = 0 LIMIT 1[0m
+  [1m[35mTracker Load (0.3ms)[0m  SELECT `trackers`.* FROM `trackers` WHERE `trackers`.`id` = 0 LIMIT 1
+  [1m[36mTracker Load (0.3ms)[0m  [1mSELECT `trackers`.* FROM `trackers` INNER JOIN `projects_trackers` ON `trackers`.`id` = `projects_trackers`.`tracker_id` WHERE `projects_trackers`.`project_id` = 94 AND `trackers`.`id` = ? ORDER BY trackers.position LIMIT 1[0m  [["id", "4"]]
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mRole Load (0.3ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mWorkflowTransition Load (0.3ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 4 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mIssueStatus Load (0.6ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT name FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 94
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mWorkflowPermission Load (0.3ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`old_status_id` = 1 AND `workflows`.`tracker_id` = 4 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5)
+  [1m[36mTracker Load (0.3ms)[0m  [1mSELECT `trackers`.* FROM `trackers` WHERE `trackers`.`id` = 4 LIMIT 1[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` 
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`old_status_id` = 1 AND `workflows`.`tracker_id` = 4 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 4 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 4 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `roles`.* FROM `roles` 
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowPermission') AND `workflows`.`old_status_id` = 1 AND `workflows`.`tracker_id` = 4 AND `workflows`.`role_id` IN (1, 2, 3, 4, 5)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `roles`.* FROM `roles` [0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `workflows`.* FROM `workflows` WHERE `workflows`.`type` IN ('WorkflowTransition') AND `workflows`.`old_status_id` = 1 AND (role_id IN (1,2,3,4,5) AND tracker_id = 4 AND ((author = 0 AND assignee = 0) OR author = 1))
+  [1m[36mCACHE (0.0ms)[0m  [1mSELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`id` IN (2, 3, 4, 5, 6)[0m
+  [1m[35mCACHE (0.0ms)[0m  SELECT `issue_statuses`.* FROM `issue_statuses` WHERE `issue_statuses`.`is_default` = 1 LIMIT 1
+  [1m[36mUser Load (0.4ms)[0m  [1mSELECT `users`.* FROM `users` INNER JOIN `members` ON `users`.`id` = `members`.`user_id` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `members`.`project_id` = 94 AND (users.type='User' AND users.status=1)[0m
+  [1m[35mEnabledModule Load (0.8ms)[0m  SELECT `enabled_modules`.* FROM `enabled_modules` WHERE `enabled_modules`.`project_id` = 94
+  [1m[36mUser Load (0.7ms)[0m  [1mSELECT `users`.* FROM `users` WHERE `users`.`type` IN ('User', 'AnonymousUser') AND `users`.`login` = 'dialer'[0m

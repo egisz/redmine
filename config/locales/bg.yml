@@ -180,7 +180,7 @@ bg:
   notice_account_deleted: Вашият профил беше премахнат без възможност за възстановяване.
   notice_user_successful_create: Потребител %{id} е създаден.
 
-  error_can_t_load_default_data: "Грешка при зареждане на примерната информация: %{value}"
+  error_can_t_load_default_data: "Грешка при зареждане на началната информация: %{value}"
   error_scm_not_found: Несъществуващ обект в хранилището.
   error_scm_command_failed: "Грешка при опит за комуникация с хранилище: %{value}"
   error_scm_annotate: "Обектът не съществува или не може да бъде анотиран."
@@ -230,6 +230,7 @@ bg:
   field_author: Автор
   field_created_on: От дата
   field_updated_on: Обновена
+  field_closed_on: Затворена
   field_field_format: Тип
   field_is_for_all: За всички проекти
   field_possible_values: Възможни стойности
@@ -246,7 +247,7 @@ bg:
   field_is_closed: Затворена задача
   field_is_default: Състояние по подразбиране
   field_tracker: Тракер
-  field_subject: Относно
+  field_subject: Заглавие
   field_due_date: Крайна дата
   field_assigned_to: Възложена на
   field_priority: Приоритет
@@ -331,6 +332,7 @@ bg:
   field_board_parent: Родителски форум
   field_private_notes: Лични бележки
   field_inherit_members: Наследяване на членовете на родителския проект
+  field_generate_password: Генериране на парола
 
   setting_app_title: Заглавие
   setting_app_subtitle: Описание
@@ -359,7 +361,7 @@ bg:
   setting_cross_project_subtasks: Подзадачи от други проекти
   setting_issue_list_default_columns: Показвани колони по подразбиране
   setting_repositories_encodings: Кодова таблица на прикачените файлове и хранилищата
-  setting_emails_header: Emails header
+  setting_emails_header: Email header
   setting_emails_footer: Подтекст за e-mail
   setting_protocol: Протокол
   setting_per_page_options: Опции за страниране
@@ -400,6 +402,7 @@ bg:
   setting_thumbnails_size: Размер на миниатюрите (в пиксели)
   setting_non_working_week_days: Не работни дни
   setting_jsonp_enabled: Разрешаване на поддръжка на JSONP
+  setting_default_projects_tracker_ids: Тракери по подразбиране за нови проекти
 
   permission_add_project: Създаване на проект
   permission_add_subprojects: Създаване на подпроекти
@@ -617,6 +620,7 @@ bg:
     one:   1 задача
     other: "%{count} задачи"
   label_total: Общо
+  label_total_time: Общо
   label_permissions: Права
   label_current_status: Текущо състояние
   label_new_statuses_allowed: Позволени състояния

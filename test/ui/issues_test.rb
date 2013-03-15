@@ -56,6 +56,51 @@ class Redmine::UiTest::IssuesTest < Redmine::UiTest::Base
     assert_equal 'Value for field 2', issue.custom_field_value(CustomField.find_by_name('Searchable field'))
   end
 
+  def test_create_issue_with_form_update
+    field1 = IssueCustomField.create!(
+      :field_format => 'string',
+      :name => 'Field1',
+      :is_for_all => true,
+      :trackers => Tracker.find_all_by_id([1, 2])
+    )
+    field2 = IssueCustomField.create!(
+      :field_format => 'string',
+      :name => 'Field2',
+      :is_for_all => true,
+      :trackers => Tracker.find_all_by_id(2)
+    )
+
+    Role.non_member.add_permission! :add_issues
+    Role.non_member.remove_permission! :edit_issues, :add_issue_notes
+
+    log_user('someone', 'foo')
+    visit '/projects/ecookbook/issues/new'
+    assert page.has_no_content?(field2.name)
+    assert page.has_content?(field1.name)
+
+    fill_in 'Subject', :with => 'New test issue'
+    fill_in 'Description', :with => 'New test issue description'
+    fill_in field1.name, :with => 'CF1 value'
+    select 'Low', :from => 'Priority'
+
+    # field2 should show up when changing tracker
+    select 'Feature request', :from => 'Tracker'
+    assert page.has_content?(field2.name)
+    assert page.has_content?(field1.name)
+
+    fill_in field2.name, :with => 'CF2 value'
+    assert_difference 'Issue.count' do
+      page.first(:button, 'Create').click
+    end
+
+    issue = Issue.order('id desc').first
+    assert_equal 'New test issue', issue.subject
+    assert_equal 'New test issue description', issue.description
+    assert_equal 'Low', issue.priority.name
+    assert_equal 'CF1 value', issue.custom_field_value(field1)
+    assert_equal 'CF2 value', issue.custom_field_value(field2)
+  end
+
   def test_create_issue_with_watchers
     User.generate!(:firstname => 'Some', :lastname => 'Watcher')
 
@@ -96,6 +141,50 @@ class Redmine::UiTest::IssuesTest < Redmine::UiTest::Base
 
     issue = Issue.order('id desc').first
     assert_equal 'new issue description', issue.description
+  end
+
+  def test_update_issue_with_form_update
+    field = IssueCustomField.create!(
+      :field_format => 'string',
+      :name => 'Form update CF',
+      :is_for_all => true,
+      :trackers => Tracker.find_all_by_name('Feature request')
+    )
+
+    Role.non_member.add_permission! :edit_issues
+    Role.non_member.remove_permission! :add_issues, :add_issue_notes
+
+    log_user('someone', 'foo')
+    visit '/issues/1'
+    assert page.has_no_content?('Form update CF')
+
+    page.first(:link, 'Update').click
+    # the custom field should show up when changing tracker
+    select 'Feature request', :from => 'Tracker'
+    assert page.has_content?('Form update CF')
+
+    fill_in 'Form update', :with => 'CF value'
+    assert_no_difference 'Issue.count' do
+      page.first(:button, 'Submit').click
+    end
+
+    issue = Issue.find(1)
+    assert_equal 'CF value', issue.custom_field_value(field)
+  end
+
+  def test_remove_issue_watcher_from_sidebar
+    user = User.find(3)
+    Watcher.create!(:watchable => Issue.find(1), :user => user)
+
+    log_user('jsmith', 'jsmith')
+    visit '/issues/1'
+    assert page.first('#sidebar').has_content?('Watchers (1)')
+    assert page.first('#sidebar').has_content?(user.name)
+    assert_difference 'Watcher.count', -1 do
+      page.first('ul.watchers .user-3 a.delete').click
+    end
+    assert page.first('#sidebar').has_content?('Watchers (0)')
+    assert page.first('#sidebar').has_no_content?(user.name)
   end
 
   def test_watch_issue_via_context_menu

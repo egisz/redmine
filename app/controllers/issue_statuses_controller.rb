@@ -40,7 +40,7 @@ class IssueStatusesController < ApplicationController
 
   def create
     @issue_status = IssueStatus.new(params[:issue_status])
-    if request.post? && @issue_status.save
+    if @issue_status.save
       flash[:notice] = l(:notice_successful_create)
       redirect_to issue_statuses_path
     else
@@ -54,7 +54,7 @@ class IssueStatusesController < ApplicationController
 
   def update
     @issue_status = IssueStatus.find(params[:id])
-    if request.put? && @issue_status.update_attributes(params[:issue_status])
+    if @issue_status.update_attributes(params[:issue_status])
       flash[:notice] = l(:notice_successful_update)
       redirect_to issue_statuses_path
     else
@@ -68,7 +68,7 @@ class IssueStatusesController < ApplicationController
   rescue
     flash[:error] = l(:error_unable_delete_issue_status)
     redirect_to issue_statuses_path
-  end  	
+  end
 
   def update_issue_done_ratio
     if request.post? && IssueStatus.update_issue_done_ratios

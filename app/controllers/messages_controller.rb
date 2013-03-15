@@ -44,7 +44,7 @@ class MessagesController < ApplicationController
     @replies =  @topic.children.
       includes(:author, :attachments, {:board => :project}).
       reorder("#{Message.table_name}.created_on ASC").
-      limit(@reply_pages.items_per_page).
+      limit(@reply_pages.per_page).
       offset(@reply_pages.offset).
       all
 
@@ -125,7 +125,7 @@ class MessagesController < ApplicationController
 
 private
   def find_message
-    find_board
+    return unless find_board
     @message = @board.messages.find(params[:id], :include => :parent)
     @topic = @message.root
   rescue ActiveRecord::RecordNotFound
@@ -137,5 +137,6 @@ private
     @project = @board.project
   rescue ActiveRecord::RecordNotFound
     render_404
+    nil
   end
 end

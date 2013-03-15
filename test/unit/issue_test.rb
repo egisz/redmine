@@ -35,6 +35,19 @@ class IssueTest < ActiveSupport::TestCase
     User.current = nil
   end
 
+  def test_initialize
+    issue = Issue.new
+
+    assert_nil issue.project_id
+    assert_nil issue.tracker_id
+    assert_nil issue.author_id
+    assert_nil issue.assigned_to_id
+    assert_nil issue.category_id
+
+    assert_equal IssueStatus.default, issue.status
+    assert_equal IssuePriority.default, issue.priority
+  end
+
   def test_create
     issue = Issue.new(:project_id => 1, :tracker_id => 1, :author_id => 3,
                       :status_id => 1, :priority => IssuePriority.all.first,
@@ -836,6 +849,49 @@ class IssueTest < ActiveSupport::TestCase
     assert_equal copy.author, child_copy.author
   end
 
+  def test_copy_as_a_child_of_copied_issue_should_not_copy_itself
+    parent = Issue.generate!
+    child1 = Issue.generate!(:parent_issue_id => parent.id, :subject => 'Child 1')
+    child2 = Issue.generate!(:parent_issue_id => parent.id, :subject => 'Child 2')
+
+    copy = parent.reload.copy
+    copy.parent_issue_id = parent.id
+    copy.author = User.find(7)
+    assert_difference 'Issue.count', 3 do
+      assert copy.save
+    end
+    parent.reload
+    copy.reload
+    assert_equal parent, copy.parent
+    assert_equal 3, parent.children.count
+    assert_equal 5, parent.descendants.count
+    assert_equal 2, copy.children.count
+    assert_equal 2, copy.descendants.count
+  end
+
+  def test_copy_as_a_descendant_of_copied_issue_should_not_copy_itself
+    parent = Issue.generate!
+    child1 = Issue.generate!(:parent_issue_id => parent.id, :subject => 'Child 1')
+    child2 = Issue.generate!(:parent_issue_id => parent.id, :subject => 'Child 2')
+
+    copy = parent.reload.copy
+    copy.parent_issue_id = child1.id
+    copy.author = User.find(7)
+    assert_difference 'Issue.count', 3 do
+      assert copy.save
+    end
+    parent.reload
+    child1.reload
+    copy.reload
+    assert_equal child1, copy.parent
+    assert_equal 2, parent.children.count
+    assert_equal 5, parent.descendants.count
+    assert_equal 1, child1.children.count
+    assert_equal 3, child1.descendants.count
+    assert_equal 2, copy.children.count
+    assert_equal 2, copy.descendants.count
+  end
+
   def test_copy_should_copy_subtasks_to_target_project
     issue = Issue.generate_with_descendants!
 
@@ -1398,6 +1454,7 @@ class IssueTest < ActiveSupport::TestCase
                           :relation_type => IssueRelation::TYPE_PRECEDES)
     assert_equal Date.parse('2012-10-18'), issue2.reload.start_date
 
+    issue1.reload
     issue1.due_date = '2012-10-23'
     issue1.save!
     issue2.reload
@@ -1412,6 +1469,7 @@ class IssueTest < ActiveSupport::TestCase
                           :relation_type => IssueRelation::TYPE_PRECEDES)
     assert_equal Date.parse('2012-10-18'), issue2.reload.start_date
 
+    issue1.reload
     issue1.start_date = '2012-09-17'
     issue1.due_date = '2012-09-18'
     issue1.save!
@@ -1430,6 +1488,7 @@ class IssueTest < ActiveSupport::TestCase
                           :relation_type => IssueRelation::TYPE_PRECEDES)
     assert_equal Date.parse('2012-10-18'), issue2.reload.start_date
 
+    issue1.reload
     issue1.start_date = '2012-09-17'
     issue1.due_date = '2012-09-18'
     issue1.save!
@@ -1776,42 +1835,42 @@ class IssueTest < ActiveSupport::TestCase
   test "#by_tracker" do
     User.current = User.anonymous
     groups = Issue.by_tracker(Project.find(1))
-    assert_equal 3, groups.size
+    assert_equal 3, groups.count
     assert_equal 7, groups.inject(0) {|sum, group| sum + group['total'].to_i}
   end
 
   test "#by_version" do
     User.current = User.anonymous
     groups = Issue.by_version(Project.find(1))
-    assert_equal 3, groups.size
+    assert_equal 3, groups.count
     assert_equal 3, groups.inject(0) {|sum, group| sum + group['total'].to_i}
   end
 
   test "#by_priority" do
     User.current = User.anonymous
     groups = Issue.by_priority(Project.find(1))
-    assert_equal 4, groups.size
+    assert_equal 4, groups.count
     assert_equal 7, groups.inject(0) {|sum, group| sum + group['total'].to_i}
   end
 
   test "#by_category" do
     User.current = User.anonymous
     groups = Issue.by_category(Project.find(1))
-    assert_equal 2, groups.size
+    assert_equal 2, groups.count
     assert_equal 3, groups.inject(0) {|sum, group| sum + group['total'].to_i}
   end
 
   test "#by_assigned_to" do
     User.current = User.anonymous
     groups = Issue.by_assigned_to(Project.find(1))
-    assert_equal 2, groups.size
+    assert_equal 2, groups.count
     assert_equal 2, groups.inject(0) {|sum, group| sum + group['total'].to_i}
   end
 
   test "#by_author" do
     User.current = User.anonymous
     groups = Issue.by_author(Project.find(1))
-    assert_equal 4, groups.size
+    assert_equal 4, groups.count
     assert_equal 7, groups.inject(0) {|sum, group| sum + group['total'].to_i}
   end
 
@@ -1819,7 +1878,7 @@ class IssueTest < ActiveSupport::TestCase
     User.current = User.anonymous
     groups = Issue.by_subproject(Project.find(1))
     # Private descendant not visible
-    assert_equal 1, groups.size
+    assert_equal 1, groups.count
     assert_equal 2, groups.inject(0) {|sum, group| sum + group['total'].to_i}
   end
 
@@ -1897,6 +1956,12 @@ class IssueTest < ActiveSupport::TestCase
     assert_equal [Journal.find(1), Journal.find(2)], Issue.find(1).journals_after('')
   end
 
+  def test_css_classes_should_include_tracker
+    issue = Issue.new(:tracker => Tracker.find(2))
+    classes = issue.css_classes.split(' ')
+    assert_include 'tracker-2', classes
+  end
+
   def test_css_classes_should_include_priority
     issue = Issue.new(:priority => IssuePriority.find(8))
     classes = issue.css_classes.split(' ')
@@ -1916,5 +1981,78 @@ class IssueTest < ActiveSupport::TestCase
 
     assert_equal 3, issue.reload.attachments.count
     assert_equal %w(upload foo bar), issue.attachments.map(&:filename)
+  end
+
+  def test_closed_on_should_be_nil_when_creating_an_open_issue
+    issue = Issue.generate!(:status_id => 1).reload
+    assert !issue.closed?
+    assert_nil issue.closed_on
+  end
+
+  def test_closed_on_should_be_set_when_creating_a_closed_issue
+    issue = Issue.generate!(:status_id => 5).reload
+    assert issue.closed?
+    assert_not_nil issue.closed_on
+    assert_equal issue.updated_on, issue.closed_on
+    assert_equal issue.created_on, issue.closed_on
+  end
+
+  def test_closed_on_should_be_nil_when_updating_an_open_issue
+    issue = Issue.find(1)
+    issue.subject = 'Not closed yet'
+    issue.save!
+    issue.reload
+    assert_nil issue.closed_on
+  end
+
+  def test_closed_on_should_be_set_when_closing_an_open_issue
+    issue = Issue.find(1)
+    issue.subject = 'Now closed'
+    issue.status_id = 5
+    issue.save!
+    issue.reload
+    assert_not_nil issue.closed_on
+    assert_equal issue.updated_on, issue.closed_on
+  end
+
+  def test_closed_on_should_not_be_updated_when_updating_a_closed_issue
+    issue = Issue.open(false).first
+    was_closed_on = issue.closed_on
+    assert_not_nil was_closed_on
+    issue.subject = 'Updating a closed issue'
+    issue.save!
+    issue.reload
+    assert_equal was_closed_on, issue.closed_on
+  end
+
+  def test_closed_on_should_be_preserved_when_reopening_a_closed_issue
+    issue = Issue.open(false).first
+    was_closed_on = issue.closed_on
+    assert_not_nil was_closed_on
+    issue.subject = 'Reopening a closed issue'
+    issue.status_id = 1
+    issue.save!
+    issue.reload
+    assert !issue.closed?
+    assert_equal was_closed_on, issue.closed_on
+  end
+
+  def test_status_was_should_return_nil_for_new_issue
+    issue = Issue.new
+    assert_nil issue.status_was
+  end
+
+  def test_status_was_should_return_status_before_change
+    issue = Issue.find(1)
+    issue.status = IssueStatus.find(2)
+    assert_equal IssueStatus.find(1), issue.status_was
+  end
+
+  def test_status_was_should_be_reset_on_save
+    issue = Issue.find(1)
+    issue.status = IssueStatus.find(2)
+    assert_equal IssueStatus.find(1), issue.status_was
+    assert issue.save!
+    assert_equal IssueStatus.find(2), issue.status_was
   end
 end

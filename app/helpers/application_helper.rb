@@ -195,7 +195,7 @@ module ApplicationHelper
 
   def format_version_name(version)
     if version.project == @project
-    	h(version)
+      h(version)
     else
       h("#{version.project} - #{version}")
     end
@@ -343,7 +343,7 @@ module ApplicationHelper
   def options_for_membership_project_select(principal, projects)
     options = content_tag('option', "--- #{l(:actionview_instancetag_blank_option)} ---")
     options << project_tree_options_for_select(projects) do |p|
-      {:disabled => principal.projects.include?(p)}
+      {:disabled => principal.projects.to_a.include?(p)}
     end
     options
   end
@@ -1180,7 +1180,7 @@ module ApplicationHelper
 
   def sanitize_anchor_name(anchor)
     if ''.respond_to?(:encoding) || RUBY_PLATFORM == 'java'
-      anchor.gsub(%r{[^\p{Word}\s\-]}, '').gsub(%r{\s+(\-+\s*)?}, '-')
+      anchor.gsub(%r{[^\s\-\p{Word}]}, '').gsub(%r{\s+(\-+\s*)?}, '-')
     else
       # TODO: remove when ruby1.8 is no longer supported
       anchor.gsub(%r{[^\w\s\-]}, '').gsub(%r{\s+(\-+\s*)?}, '-')
